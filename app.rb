@@ -39,8 +39,17 @@ $stack = []
 $level = 0
 
 def render
+  queue = []
   while $stack.size > 1
+    p $stack
     cur = $stack.pop
+    cur_level ||= cur[1]
+    p [cur_level, cur[1]]
+    if cur_level < cur[1]
+      p 'next'
+      queue << cur
+      next
+    end
     nex = $stack.pop
     if cur[1] > nex[1]
       cur[0] = cur[0].render if cur[0].class != String
@@ -48,25 +57,24 @@ def render
     else
       cur[0] = cur[0].render if cur[0].class != String
       nex[0] = nex[0].render if nex[0].class != String
-      $stack << [nex[0] + cur[0], cur[1]]
+      $stack << [nex[0] + cur[0], nex[1]]
     end
+    cur_level = nex[1]
+    $stack.concat(queue) unless queue.empty?
   end
 end
 
 
 body = ShenmeGUI.body do
-  button {}
+  #button {}
 
   stack do
-   button
-   button
-   textline
+    button
   end
-  
+
   flow do 
     textline
   end
-
 end
 
 render
