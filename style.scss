@@ -1,5 +1,6 @@
 body {
-	margin: 0;
+	margin: 50px;
+	width: 600px;
 }
 
 .stack * {
@@ -8,8 +9,4 @@ body {
 
 .flow * {
 	display: inline;
-}
-
-div {
-	border: #ccc solid 1px;
 }

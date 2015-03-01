@@ -11,6 +11,7 @@ class ShenmeGUI
   def self.app(params={}, &block)
     el = Node.new(:body, params)
     el.instance_eval &block unless block.nil?
+    File.open('index.html', 'w'){ |f| f.write el.render }
     el
   end
 
@@ -65,10 +66,9 @@ body = ShenmeGUI.app do
 
   flow do 
     button 'ok'
+    button 'ok'
+    button 'ok'
     textline 'textline'
   end
 
 end
-
-print body.render
-File.open('index.html', 'w'){ |f| f.write body.render }
