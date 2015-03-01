@@ -35,8 +35,9 @@ class ShenmeGUI
     end
     
     %w{body stack flow button radio checkbox image select textline textarea}.each do |x|
-      define_method "#{x}" do |params={}, &block|
-        el = Node.new(x.to_sym)
+      define_method "#{x}" do |value=nil, &block|
+        params = {value: value}
+        el = Node.new(x.to_sym, params)
         self.children << el
         el.instance_eval &block unless block.nil?
         el
@@ -54,14 +55,17 @@ class ShenmeGUI
 end
 
 body = ShenmeGUI.app do
-  button {}
+  button 'button1'
 
   stack do
-    button
+    button 'button2'
+    button 'button3'
+    textarea 'default'
   end
 
   flow do 
-    textline
+    button 'ok'
+    textline 'textline'
   end
 
 end
