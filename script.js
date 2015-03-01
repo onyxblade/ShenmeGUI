@@ -1,7 +1,7 @@
 var wsUrl = "ws://localhost/";
 
 websocket = new WebSocket(wsUrl);
-websocket.onopen = function(evt){ console.log("Connected."); websocket.send("Connected!"); };
+websocket.onopen = function(evt){ console.log("Connected."); };
 websocket.onmessage = function(evt){ console.log(evt.data); };
 websocket.onclose = function(evt){ console.log("Closed."); };
 
@@ -19,7 +19,7 @@ for(i=0; i<buttons.length; i++){
 
 var inputs = document.getElementsByTagName('input');
 for(i=0; i<inputs.length; i++){
-	inputs[i].addEventListener('change', function(){
+	inputs[i].addEventListener('input', function(){
 		var value = {value: this.value};
 		websocket.send("change:" + getId(this) + "->" + JSON.stringify(value));
 	});

@@ -1,5 +1,7 @@
 require 'erb'
 require 'pp'
+require 'em-websocket'
+require 'json'
 
 class ShenmeGUI
   class << self
@@ -19,7 +21,7 @@ class ShenmeGUI
     attr_accessor :id, :type, :prop, :children
 
     def inspect
-      "##{@type}.#{@id} #{@children}"
+      "##{@type}.#{@id} #{@prop}"
     end
 
     def initialize(type, params={})
@@ -52,6 +54,24 @@ class ShenmeGUI
     end
   end
 
+  def self.handle(msg)
+    match_data = msg.match(/(.+?):(\d)(?:->)?({.+?})?/)
+    command = match_data[1].to_sym
+    id = match_data[2].to_i
+    data = JSON.parse(match_data[3]) unless match_data[3].nil?
+    case command
+    when :click
+      target = elements[id]
+      p target
+      $ws.send(target.inspect)
+    when :change
+      target = elements[id]
+      data.each do |k,v|
+        target.prop[k.to_sym] = v
+      end
+      p target
+    end
+  end
 
 end
 
@@ -71,4 +91,20 @@ body = ShenmeGUI.app do
     textline 'textline'
   end
 
+end
+
+
+EM.run do
+  EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
+    ws.onopen { puts "WebSocket connection open" }
+
+    ws.onclose { puts "Connection closed" }
+
+    ws.onmessage do |msg|
+      puts "Recieved message: #{msg}"
+      ShenmeGUI.handle msg
+    end
+    
+    $ws = ws
+  end
 end
