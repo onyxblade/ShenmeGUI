@@ -3,6 +3,30 @@ require 'pp'
 require 'em-websocket'
 require 'json'
 
+def hook(bind)
+  variables = bind.eval("local_variables")
+  p variables
+  variables.each do |x|
+    ShenmeGUI.send(:define_singleton_method, x){ x = bind.eval("#{x}")}
+  end
+end
+
+def hacked_instance_eval(&block)
+  bind = nil
+  called = false
+  TracePoint.trace(:c_call, :line) do |tp|
+    if called
+      bind = tp.binding if tp.event == :line
+      tp.disable
+    else
+      called = true if tp.event == :c_call
+    end
+  end
+  result = instance_eval &block
+  hook(bind)
+  result
+end
+
 class ShenmeGUI
   class << self
     attr_accessor :elements, :socket, :temp_stack
@@ -14,7 +38,7 @@ class ShenmeGUI
   def self.app(params={}, &block)
     el = Node.new(:body, params)
     temp_stack << el 
-    instance_eval &block unless block.nil?
+    hacked_instance_eval &block unless block.nil?
     temp_stack.pop
     File.open('index.html', 'w'){ |f| f.write el.render }
     el
@@ -49,7 +73,7 @@ class ShenmeGUI
       el = Node.new(x.to_sym, params)
       temp_stack.last.children << el
       temp_stack << el
-      instance_eval &block unless block.nil?
+      hacked_instance_eval &block unless block.nil?
       temp_stack.pop
       el
     end
@@ -80,11 +104,11 @@ end
 ShenmeGUI.app do
   b = button 'button1'
   b.events[:click] = lambda {
-    p 1
+    p but
   }
 
   stack do
-    button 'button2'
+    but = button 'button2'
     button 'button3'
     textarea 'default'
   end
@@ -98,6 +122,10 @@ ShenmeGUI.app do
 
 end
 
+lam = ShenmeGUI.elements[1].events[:click]
+ShenmeGUI.instance_exec(&lam)
+
+=begin
 EM.run do
   EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
     ws.onopen { puts "WebSocket connection open" }
@@ -112,3 +140,4 @@ EM.run do
     ShenmeGUI.socket = ws
   end
 end
+=end
