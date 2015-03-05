@@ -21,7 +21,8 @@ var inputs = document.getElementsByTagName('input');
 for(i=0; i<inputs.length; i++){
 	inputs[i].addEventListener('input', function(){
 		var value = {value: this.value};
-		websocket.send("change:" + getId(this) + "->" + JSON.stringify(value));
+		websocket.send("update:" + getId(this) + "->" + JSON.stringify(value));
+		websocket.send("input:" + getId(this));
 	});
 }
 

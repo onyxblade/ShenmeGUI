@@ -3,33 +3,39 @@ require 'pp'
 require 'em-websocket'
 require 'json'
 
-def hook(bind)
-  variables = bind.eval("local_variables")
-  p variables
-  variables.each do |x|
-    ShenmeGUI.send(:define_singleton_method, x){ x = bind.eval("#{x}")}
-  end
-end
+module ShenmeGUI
 
-def hacked_instance_eval(&block)
-  bind = nil
-  called = false
-  TracePoint.trace(:c_call, :line) do |tp|
-    if called
-      bind = tp.binding if tp.event == :line
-      tp.disable
-    else
-      called = true if tp.event == :c_call
-    end
-  end
-  result = instance_eval &block
-  hook(bind)
-  result
-end
-
-class ShenmeGUI
   class << self
     attr_accessor :elements, :socket, :temp_stack
+    
+    private
+      def copy_variables(current_bind, upper_bind)
+        current_variables = current_bind.eval("local_variables")
+        upper_variables = upper_bind.eval("local_variables")
+        current_variables.reject!{|x| upper_variables.include? x}
+        p current_variables
+        current_variables.each do |x|
+          ShenmeGUI.send(:define_singleton_method, x){ current_bind.eval("#{x}")}
+        end
+      end
+
+      def hacked_instance_eval(&block)
+        current_bind = nil
+        called = false
+        TracePoint.trace(:c_call, :line) do |tp|
+          if called
+            current_bind = tp.binding if tp.event == :line
+            tp.disable
+          else
+            called = true if tp.event == :c_call
+          end
+        end
+        result = instance_eval &block
+        upper_bind = block.binding
+        copy_variables(current_bind, upper_bind)
+        result
+      end
+  
   end
 
   @elements = []
@@ -65,6 +71,15 @@ class ShenmeGUI
       content = self.children.collect{|x| x.render}.join("\n")
       template.result(binding)
     end
+
+    %w{click input}.each do |x|
+      x = x.to_sym
+      define_method(x) do |&block|
+        return events[x] if block.nil?
+        events[x] = lambda &block
+      end
+    end
+
   end
 
   %w{body stack flow button radio checkbox image select textline textarea}.each do |x|
@@ -84,28 +99,26 @@ class ShenmeGUI
     command = match_data[1].to_sym
     id = match_data[2].to_i
     data = JSON.parse(match_data[3]) unless match_data[3].nil?
+    target = elements[id]
     case command
-    when :click
-      target = elements[id]
-      p target
-      event_lambda = elements[id].events[:click]
+    when :click, :input
+      event_lambda = elements[id].events[command]
       ShenmeGUI.instance_exec(&event_lambda) if event_lambda 
-    when :change
-      target = elements[id]
+    when :update
       data.each do |k,v|
         target.prop[k.to_sym] = v
       end
-      p target
     end
+    target
   end
 
 end
 
 ShenmeGUI.app do
   b = button 'button1'
-  b.events[:click] = lambda {
+  b.click do
     p but
-  }
+  end
 
   stack do
     but = button 'button2'
@@ -117,13 +130,12 @@ ShenmeGUI.app do
     button 'ok'
     button 'ok'
     button 'ok'
-    textline 'textline'
+    textline('textline')
+    .input {p self}
   end
 
 end
 
-lam = ShenmeGUI.elements[1].events[:click]
-ShenmeGUI.instance_exec(&lam)
 
 =begin
 EM.run do
