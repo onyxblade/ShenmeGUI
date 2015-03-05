@@ -6,7 +6,7 @@ websocket.onmessage = function(evt){ console.log(evt.data); };
 websocket.onclose = function(evt){ console.log("Closed."); };
 
 function getId(obj){
-	return obj.id.match(/item-(\d)/)[1];
+	return obj.id.match(/item-(\d+)/)[1];
 }
 
 var buttons = document.getElementsByTagName('button');
