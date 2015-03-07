@@ -3,7 +3,9 @@ var wsUrl = "ws://localhost/";
 websocket = new WebSocket(wsUrl);
 websocket.onopen = function(evt){ console.log("Connected."); };
 websocket.onmessage = function(evt){ console.log(evt.data); handleMessage(evt.data); };
-websocket.onclose = function(evt){ console.log("Closed."); };
+websocket.onclose = function(evt){
+	console.log("Closed.");
+};
 
 function handleMessage(msg){
 	var match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/);

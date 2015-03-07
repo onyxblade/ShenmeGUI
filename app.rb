@@ -144,19 +144,26 @@ ShenmeGUI.app do
 
 end
 
-#=begin
-EM.run do
-  EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
-    ws.onopen { puts "WebSocket connection open" }
+begin
+ws_thread = Thread.new do
+  EM.run do
+    EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
+      ws.onopen { puts "WebSocket connection open" }
 
-    ws.onclose { puts "Connection closed" }
+      ws.onclose { puts "Connection closed" }
 
-    ws.onmessage do |msg|
-      puts "Recieved message: #{msg}"
-      ShenmeGUI.handle msg
+      ws.onmessage do |msg|
+        puts "Recieved message: #{msg}"
+        ShenmeGUI.handle msg
+      end
+      
+      ShenmeGUI.socket = ws
     end
-    
-    ShenmeGUI.socket = ws
   end
 end
-#=end
+
+index_path = "#{Dir.pwd}/index.html"
+`start file:///#{index_path}`
+
+ws_thread.join
+end
