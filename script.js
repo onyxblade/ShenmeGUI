@@ -2,14 +2,26 @@ var wsUrl = "ws://localhost/";
 
 websocket = new WebSocket(wsUrl);
 websocket.onopen = function(evt){ console.log("Connected."); };
-websocket.onmessage = function(evt){ console.log(evt.data); };
+websocket.onmessage = function(evt){ console.log(evt.data); handleMessage(evt.data); };
 websocket.onclose = function(evt){ console.log("Closed."); };
+
+function handleMessage(msg){
+	var match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/);
+	var command = match_data[1];
+	var target = document.getElementById('item-' + match_data[2]);
+	var data = JSON.parse(match_data[3]);
+	switch (command){
+		case 'update':
+			target.properties = data;
+			target.value = data.value;
+	}
+}
 
 function getId(obj){
 	return obj.id.match(/item-(\d+)/)[1];
 }
 
-var buttons = document.getElementsByTagName('button');
+var buttons = document.getElementsByTagName('input');
 var i;
 for(i=0; i<buttons.length; i++){
 	buttons[i].addEventListener('click', function(){
