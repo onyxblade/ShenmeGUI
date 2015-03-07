@@ -5,23 +5,14 @@ ShenmeGUI.app do
   @b = button 'button1'
   @b.onclick do
     @b.value = "clicked"
-    @t.value = "ok"
+    @text.value = "ok"
   end
 
-  stack do
-    @but = button 'button2'
-    button 'button3'
-    @t = textarea 'default'
-  end
+  @text = textarea 'default'
 
-  flow do 
-    button 'ok'
-    button 'ok'
-    button 'ok'
-    @text = textline('textline')
-    @text.oninput do
-      @b.value = @text.value
-    end
+  @t = textline('textline')
+  @t.oninput do
+    @b.value = @t.value
   end
 
 end
