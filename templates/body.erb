@@ -4,10 +4,14 @@
 	<meta charset="UTF-8">
 	<title>Document</title>
 	<link rel="stylesheet" type="text/css" href="http://cdn.amazeui.org/amazeui/2.2.1/css/amazeui.min.css">
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<style>
+		<%= style %>
+	</style>
 </head>
 <body id="item-<%= id %>">
 	<%= content %>
-	<script src="script.js"></script>
+	<script>
+		<%= script %>
+	</script>
 </body>
 </html>

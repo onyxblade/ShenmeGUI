@@ -1,7 +1,6 @@
 require 'erb'
-require 'pp'
-require 'em-websocket'
 require 'json'
+require 'em-websocket'
 
 module ShenmeGUI
 
@@ -84,7 +83,14 @@ module ShenmeGUI
     end
 
     def render
-      template = ::ERB.new File.open("templates/#{type}.erb", 'r') { |f| f.read }
+      lib_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui.rb/)[0]
+      template_path = lib_path.match(/(.*)\/lib/)[1] + "/templates"
+      if type == :body
+        static_path = lib_path.match(/(.*)\/lib/)[1] + "/static"
+        style = File.open("#{static_path}/style.css", 'r'){ |f| f.read }
+        script = File.open("#{static_path}/script.js", 'r'){ |f| f.read }
+      end
+      template = ::ERB.new File.open("#{template_path}/#{type}.erb", 'r') { |f| f.read }
       content = self.children.collect{|x| x.render}.join("\n")
       template.result(binding)
     end
@@ -117,53 +123,31 @@ module ShenmeGUI
     target
   end
 
-end
+  module Server
+    def self.start!
+      ws_thread = Thread.new do
+        EM.run do
+          EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
+            ws.onopen { puts "WebSocket connection open" }
 
-ShenmeGUI.app do
-  @b = button 'button1'
-  @b.onclick do
-    @b.value = "clicked"
-    @t.value = "ok"
-  end
+            ws.onclose { puts "Connection closed" }
 
-  stack do
-    @but = button 'button2'
-    button 'button3'
-    @t = textarea 'default'
-  end
-
-  flow do 
-    button 'ok'
-    button 'ok'
-    button 'ok'
-    @text = textline('textline')
-    @text.oninput do
-      @b.value = @text.value
-    end
-  end
-
-end
-
-begin
-ws_thread = Thread.new do
-  EM.run do
-    EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
-      ws.onopen { puts "WebSocket connection open" }
-
-      ws.onclose { puts "Connection closed" }
-
-      ws.onmessage do |msg|
-        puts "Recieved message: #{msg}"
-        ShenmeGUI.handle msg
+            ws.onmessage do |msg|
+              puts "Recieved message: #{msg}"
+              ShenmeGUI.handle msg
+            end
+            
+            ShenmeGUI.socket = ws
+          end
+        end
       end
-      
-      ShenmeGUI.socket = ws
+
+      index_path = "#{Dir.pwd}/index.html"
+      `start file:///#{index_path}`
+
+      ws_thread.join
     end
+
   end
-end
 
-index_path = "#{Dir.pwd}/index.html"
-`start file:///#{index_path}`
-
-ws_thread.join
 end
