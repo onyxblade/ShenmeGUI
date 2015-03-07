@@ -49,13 +49,7 @@ function getId(obj){
 	return obj.id.match(/item-(\d+)/)[1];
 }
 
-var buttons = document.getElementsByTagName('input');
 var i;
-for(i=0; i<buttons.length; i++){
-	buttons[i].addEventListener('click', function(){
-		websocket.send("click:" + getId(this));
-	});
-}
 
 var inputs = document.getElementsByTagName('input');
 for(i=0; i<inputs.length; i++){
@@ -63,6 +57,9 @@ for(i=0; i<inputs.length; i++){
 		var value = {value: this.value};
 		websocket.send("update:" + getId(this) + "->" + JSON.stringify(value));
 		websocket.send("input:" + getId(this));
+	});
+	inputs[i].addEventListener('click', function(){
+		websocket.send("click:" + getId(this));
 	});
 }
 

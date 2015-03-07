@@ -1,4 +1,3 @@
-require 'em-websocket'
 require '../lib/shenmegui'
 
 ShenmeGUI.app do
