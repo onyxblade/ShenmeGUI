@@ -99,8 +99,8 @@ module ShenmeGUI
       define_method("on#{x}") do |&block|
         return events[x] if block.nil?
         events[x] = lambda &block
+        self
       end
-      self
     end
 
   end
