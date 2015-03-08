@@ -25,7 +25,9 @@ ShenmeGUI.app do
   @src = textline(@i.src)
   .onchange do
     @i.src = @src.value
-  end 
+  end
+
+  label('test tring')
 
   @t = textline('textline')
   @t.oninput do

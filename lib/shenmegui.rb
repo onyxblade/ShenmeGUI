@@ -8,7 +8,7 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :temp_stack
 
-    %w{body stack flow button radio checkbox image select textline textarea}.each do |x|
+    %w{body stack flow button radio checkbox image select textline textarea label}.each do |x|
       define_method "#{x}" do |value=nil, params={}, &block|
         params.merge!({value: value})
         el = Control.new(x.to_sym, params)
@@ -63,7 +63,9 @@ module ShenmeGUI
       textline: %i{style value cursor},
       stack: %i{style},
       flow: %i{style},
-      image: %i{src} 
+      image: %i{src},
+      checkbox: %i{value checked},
+      label: %i{value}
     }
 
     def self.available_properties
