@@ -24,15 +24,22 @@
 <div class="am-form"><textarea id="item-2">default</textarea></div>
 <input id="item-3" class="am-form-field" type="text" value="textline"/>
 	<script>
-		var wsUrl = "ws://localhost/";
+		//websocket设置
+var wsUrl = "ws://localhost/";
 
 websocket = new WebSocket(wsUrl);
-websocket.onopen = function(evt){ console.log("Connected."); };
-websocket.onmessage = function(evt){ console.log(evt.data); handleMessage(evt.data); };
+websocket.onopen = function(evt){
+	console.log("Connected.");
+};
+websocket.onmessage = function(evt){
+	console.log(evt.data);
+	handleMessage(evt.data);
+};
 websocket.onclose = function(evt){
 	console.log("Closed.");
 };
 
+//
 function handleMessage(msg){
 	var match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/);
 	var command = match_data[1];
@@ -45,22 +52,33 @@ function handleMessage(msg){
 	}
 }
 
+function sync(obj){
+	var value = {value: obj.value};
+	websocket.send("update:" + getId(obj) + "->" + JSON.stringify(value));
+}
+
 function getId(obj){
 	return obj.id.match(/item-(\d+)/)[1];
 }
 
 var i;
-
+var availableEvents = {
+	input: ['click', 'dblclick', 'mouseout', 'mouseover']
+}
 var inputs = document.getElementsByTagName('input');
 for(i=0; i<inputs.length; i++){
 	inputs[i].addEventListener('input', function(){
-		var value = {value: this.value};
-		websocket.send("update:" + getId(this) + "->" + JSON.stringify(value));
+		sync(this);
 		websocket.send("input:" + getId(this));
 	});
-	inputs[i].addEventListener('click', function(){
-		websocket.send("click:" + getId(this));
-	});
+	for(j in availableEvents['input']){
+		(function(){
+			var type = availableEvents['input'][j];
+			inputs[i].addEventListener(type, function(){
+				websocket.send(type + ":" + getId(this));
+			});
+		})();
+	}
 }
 
 var textareas = document.getElementsByTagName('textarea');

@@ -39,7 +39,7 @@ module ShenmeGUI
   class Control
     attr_accessor :id, :type, :properties, :events, :children, :parent
 
-    @available_events = %w{click input}.collect(&:to_sym)
+    @available_events = %w{click input dblclick mouseover mouseout}.collect(&:to_sym)
     @available_properties = {
       body: %i{style},
       button: %i{value},
@@ -106,6 +106,7 @@ module ShenmeGUI
   end
 
   def self.handle(msg)
+    p msg
     match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
     command = match_data[1].to_sym
     id = match_data[2].to_i

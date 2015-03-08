@@ -6,6 +6,12 @@ ShenmeGUI.app do
     @b.value = "clicked"
     @text.value = "ok"
   end
+  @b.onmouseover do
+    @text.value = "mouseover"
+  end
+  @b.onmouseout do 
+    @text.value = "mouseout"
+  end
 
   @text = textarea 'default'
 
