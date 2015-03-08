@@ -6,14 +6,20 @@ ShenmeGUI.app do
     @b.value = "clicked"
     @text.value = "ok"
   end
-  @b.onmouseover do
-    @text.value = "mouseover"
-  end
-  @b.onmouseout do 
-    @text.value = "mouseout"
-  end
 
-  @text = textarea 'default'
+  @s = stack do 
+    but = button 'change background'
+    but.onclick do
+      @s.style = "background-color: #ccc"
+    end
+    @text = textarea 'default'
+    @text.onblur do
+      @text.value = "mouseover"
+    end
+    @text.onfocus do 
+      @text.value = "mouseout"
+    end
+  end
 
   @t = textline('textline')
   @t.oninput do

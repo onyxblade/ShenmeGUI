@@ -1,17 +1,21 @@
 //websocket设置
-var wsUrl = "ws://localhost/";
+var websocket = 
+(function configureWebSocket(){
+	var wsUrl = "ws://localhost/";
 
-websocket = new WebSocket(wsUrl);
-websocket.onopen = function(evt){
-	console.log("Connected.");
-};
-websocket.onmessage = function(evt){
-	console.log(evt.data);
-	handleMessage(evt.data);
-};
-websocket.onclose = function(evt){
-	console.log("Closed.");
-};
+	var websocket = new WebSocket(wsUrl);
+	websocket.onopen = function(evt){
+		console.log("Connected.");
+	};
+	websocket.onmessage = function(evt){
+		console.log(evt.data);
+		handleMessage(evt.data);
+	};
+	websocket.onclose = function(evt){
+		console.log("Closed.");
+	};
+	return websocket;
+})();
 
 function sync(obj){
 	var value = {value: obj.value};
@@ -19,7 +23,6 @@ function sync(obj){
 }
 
 function addEvents(obj, events){
-	console.log(obj);
 	for(i in events){
 		(function(){
 			var type = events[i];
@@ -60,6 +63,7 @@ function handleMessage(msg){
 		case 'update':
 			target.properties = data;
 			target.value = data.value;
+			target.style.cssText = data.style;
 			break;
 		case 'add_event':
 			addEvents(target, data);

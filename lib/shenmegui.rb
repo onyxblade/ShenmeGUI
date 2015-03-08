@@ -39,13 +39,13 @@ module ShenmeGUI
   class Control
     attr_accessor :id, :type, :properties, :events, :children, :parent
 
-    @available_events = %w{click input dblclick mouseover mouseout}.collect(&:to_sym)
+    @available_events = %w{click input dblclick mouseover mouseout blur focus mousemove}.collect(&:to_sym)
     @available_properties = {
       body: %i{style},
-      button: %i{value},
-      input: %i{value},
-      textarea: %i{value cursor},
-      textline: %i{value cursor},
+      button: %i{style value},
+      input: %i{style value},
+      textarea: %i{style value cursor},
+      textline: %i{style value cursor},
       stack: %i{style},
       flow: %i{style}
     }
