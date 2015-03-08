@@ -58,8 +58,15 @@ module ShenmeGUI
       "##{@type}.#{@id} #{@properties}"
     end
 
-    def update
-      msg = "update:#{@id}->#{@properties.to_json}"
+    def sync
+      data = @properties
+      msg = "update:#{@id}->#{data.to_json}"
+      ::ShenmeGUI.socket.send(msg)
+    end
+
+    def add_events
+      data = @events.keys
+      msg = "add_event:#{@id}->#{data.to_json}"
       ::ShenmeGUI.socket.send(msg)
     end
 
@@ -77,7 +84,7 @@ module ShenmeGUI
 
         define_singleton_method("#{x}=") do |v|
           @properties[x] = v
-          update
+          sync
         end
       end
     end
@@ -129,7 +136,10 @@ module ShenmeGUI
       ws_thread = Thread.new do
         EM.run do
           EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
-            ws.onopen { puts "WebSocket connection open" }
+            ws.onopen do
+              puts "WebSocket connection open"
+              ShenmeGUI::elements.each { |e| e.add_events }
+            end
 
             ws.onclose { puts "Connection closed" }
 
