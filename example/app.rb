@@ -14,12 +14,18 @@ ShenmeGUI.app do
     end
     @text = textarea 'default'
     @text.onblur do
-      @text.value = "mouseover"
+      @text.value = "blur"
     end
     @text.onfocus do 
-      @text.value = "mouseout"
+      @text.value = "focus"
     end
   end
+
+  @i = image(nil, src: "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg")
+  @src = textline(@i.src)
+  .onchange do
+    @i.src = @src.value
+  end 
 
   @t = textline('textline')
   @t.oninput do

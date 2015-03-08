@@ -8,12 +8,12 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :temp_stack
 
-    %w{stack flow button radio checkbox image select textline textarea}.each do |x|
-      define_method "#{x}" do |value=nil, &block|
-        params = {value: value}
+    %w{body stack flow button radio checkbox image select textline textarea}.each do |x|
+      define_method "#{x}" do |value=nil, params={}, &block|
+        params.merge!({value: value})
         el = Control.new(x.to_sym, params)
-        temp_stack.last.children << el
-        el.parent = temp_stack.last
+        temp_stack.last.children << el unless temp_stack.empty?
+        el.parent = temp_stack.last unless temp_stack.empty?
         temp_stack << el
         instance_eval &block unless block.nil?
         temp_stack.pop
@@ -22,24 +22,39 @@ module ShenmeGUI
       private x.to_sym
     end
 
+    def handle(msg)
+      match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
+      command = match_data[1].to_sym
+      id = match_data[2].to_i
+      data = JSON.parse(match_data[3]) unless match_data[3].nil?
+      target = elements[id]
+      case command
+        when :sync
+          data.each do |k,v|
+            target.properties[k.to_sym] = v
+          end
+        else
+          event_lambda = elements[id].events[command]
+          ShenmeGUI.instance_exec(&event_lambda) if event_lambda 
+      end
+      target
+    end
+
+    def app(params={}, &block)
+      el = body(nil, params, &block)
+      File.open('index.html', 'w'){ |f| f.write el.render }
+      el
+    end
+
   end
 
   @elements = []
   @temp_stack = []
 
-  def self.app(params={}, &block)
-    el = Control.new(:body, params)
-    temp_stack << el 
-    instance_eval &block unless block.nil?
-    temp_stack.pop
-    File.open('index.html', 'w'){ |f| f.write el.render }
-    el
-  end
-
   class Control
     attr_accessor :id, :type, :properties, :events, :children, :parent
 
-    @available_events = %w{click input dblclick mouseover mouseout blur focus mousemove}.collect(&:to_sym)
+    @available_events = %w{click input dblclick mouseover mouseout blur focus mousemove change}.collect(&:to_sym)
     @available_properties = {
       body: %i{style},
       button: %i{style value},
@@ -47,20 +62,17 @@ module ShenmeGUI
       textarea: %i{style value cursor},
       textline: %i{style value cursor},
       stack: %i{style},
-      flow: %i{style}
+      flow: %i{style},
+      image: %i{src} 
     }
 
     def self.available_properties
       @available_properties
     end
 
-    def inspect
-      "##{@type}.#{@id} #{@properties}"
-    end
-
     def sync
       data = @properties
-      msg = "update:#{@id}->#{data.to_json}"
+      msg = "sync:#{@id}->#{data.to_json}"
       ::ShenmeGUI.socket.send(msg)
     end
 
@@ -110,25 +122,6 @@ module ShenmeGUI
       end
     end
 
-  end
-
-  def self.handle(msg)
-    p msg
-    match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
-    command = match_data[1].to_sym
-    id = match_data[2].to_i
-    data = JSON.parse(match_data[3]) unless match_data[3].nil?
-    target = elements[id]
-    case command
-      when :update
-        data.each do |k,v|
-          target.properties[k.to_sym] = v
-        end
-      else
-        event_lambda = elements[id].events[command]
-        ShenmeGUI.instance_exec(&event_lambda) if event_lambda 
-    end
-    target
   end
 
   module Server

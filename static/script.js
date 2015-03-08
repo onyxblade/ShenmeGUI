@@ -1,4 +1,3 @@
-//websocket设置
 var websocket = 
 (function configureWebSocket(){
 	var wsUrl = "ws://localhost/";
@@ -19,7 +18,7 @@ var websocket =
 
 function sync(obj){
 	var value = {value: obj.value};
-	websocket.send("update:" + getId(obj) + "->" + JSON.stringify(value));
+	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(value));
 }
 
 function addEvents(obj, events){
@@ -60,10 +59,11 @@ function handleMessage(msg){
 	var target = document.getElementById('item-' + match_data[2]);
 	var data = JSON.parse(match_data[3]);
 	switch (command){
-		case 'update':
+		case 'sync':
 			target.properties = data;
-			target.value = data.value;
-			target.style.cssText = data.style;
+			if(data.value != undefined && data.value != null)	target.value = data.value;
+			if(data.style != undefined && data.style != null)	target.style.cssText = data.style;
+			if(data.src != undefined && data.src != null)	target.src = data.src;
 			break;
 		case 'add_event':
 			addEvents(target, data);

@@ -23,10 +23,11 @@
 	<input id="item-1" type="button" class="am-btn am-btn-primary" value="button1" />
 <div id="item-2" class="stack"><input id="item-3" type="button" class="am-btn am-btn-primary" value="change background" />
 <div class="am-form"><textarea id="item-4">default</textarea></div></div>
-<input id="item-5" class="am-form-field" type="text" value="textline"/>
+<img id="item-5" src="http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg" alt=""/>
+<input id="item-6" class="am-form-field" type="text" value="http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"/>
+<input id="item-7" class="am-form-field" type="text" value="textline"/>
 	<script>
-		//websocket设置
-var websocket = 
+		var websocket = 
 (function configureWebSocket(){
 	var wsUrl = "ws://localhost/";
 
@@ -46,7 +47,7 @@ var websocket =
 
 function sync(obj){
 	var value = {value: obj.value};
-	websocket.send("update:" + getId(obj) + "->" + JSON.stringify(value));
+	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(value));
 }
 
 function addEvents(obj, events){
@@ -87,10 +88,11 @@ function handleMessage(msg){
 	var target = document.getElementById('item-' + match_data[2]);
 	var data = JSON.parse(match_data[3]);
 	switch (command){
-		case 'update':
+		case 'sync':
 			target.properties = data;
-			target.value = data.value;
-			target.style.cssText = data.style;
+			if(data.value != undefined && data.value != null)	target.value = data.value;
+			if(data.style != undefined && data.style != null)	target.style.cssText = data.style;
+			if(data.src != undefined && data.src != null)	target.src = data.src;
 			break;
 		case 'add_event':
 			addEvents(target, data);
