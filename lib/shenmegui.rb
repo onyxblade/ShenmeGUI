@@ -6,7 +6,7 @@ module ShenmeGUI
 
   class << self
     attr_accessor :elements, :socket
-    attr_reader :temp_stack
+    attr_reader :temp_stack, :this
 
     %w{body stack flow button radio checkbox image select textline textarea label}.each do |x|
       define_method "#{x}" do |value=nil, params={}, &block|
@@ -35,6 +35,7 @@ module ShenmeGUI
           end
         else
           event_lambda = elements[id].events[command]
+          @this = elements[id]
           ShenmeGUI.instance_exec(&event_lambda) if event_lambda 
       end
       target

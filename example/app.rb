@@ -14,10 +14,10 @@ ShenmeGUI.app do
     end
     @text = textarea 'default'
     @text.onblur do
-      @text.value = "blur"
+      this.value = "blur"
     end
     @text.onfocus do 
-      @text.value = "focus"
+      this.value = "focus"
     end
   end
 
@@ -31,7 +31,7 @@ ShenmeGUI.app do
 
   @t = textline('textline')
   @t.oninput do
-    @b.value = @t.value
+    @b.value = this.value
   end
 
 end
