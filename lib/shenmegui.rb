@@ -79,20 +79,20 @@ module ShenmeGUI
     def sync
       data = @properties
       msg = "sync:#{@id}->#{data.to_json}"
-      ::ShenmeGUI.socket.send(msg)
+      ShenmeGUI.socket.send(msg)
     end
 
     def add_events
       data = @events.keys
       msg = "add_event:#{@id}->#{data.to_json}"
-      ::ShenmeGUI.socket.send(msg)
+      ShenmeGUI.socket.send(msg)
     end
 
     def initialize(type, params={})
       self.type = type
       self.properties = params
-      self.id = ::ShenmeGUI.elements.size
-      ::ShenmeGUI.elements << self
+      self.id = ShenmeGUI.elements.size
+      ShenmeGUI.elements << self
       self.children = []
       self.events = {}
       self.class.available_properties[type].each do |x|
