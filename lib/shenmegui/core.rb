@@ -4,19 +4,6 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :this
 
-    %w{body stack flow button radio checkbox image select textline textarea label progress}.each do |x|
-      define_method x do |params={}, &block|
-        el = const_get(x.capitalize).new(params)
-        @temp_stack.last.children << el unless @temp_stack.empty?
-        el.parent = @temp_stack.last unless @temp_stack.empty?
-        @temp_stack << el
-        instance_eval &block unless block.nil?
-        @temp_stack.pop
-        el
-      end
-      private x.to_sym
-    end
-
     def handle(msg)
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym

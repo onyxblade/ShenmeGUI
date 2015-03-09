@@ -14,7 +14,7 @@ ShenmeGUI.app do
       but.onclick do
         @s.background = "#ccc"
       end
-      @text = textarea 'default'
+      @text = textarea('default', width: '100px')
       @text.onblur do
         this.value = "blur"
       end
@@ -35,7 +35,7 @@ ShenmeGUI.app do
     end
 
     progress 15
-    checkbox 'check me'
+    checkbox 'check me' 
     radio 'a radio'
   end
 end
