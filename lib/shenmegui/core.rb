@@ -5,7 +5,7 @@ module ShenmeGUI
     attr_reader :this
 
     %w{body stack flow button radio checkbox image select textline textarea label}.each do |x|
-      define_method "#{x}" do |params={}, &block|
+      define_method x do |params={}, &block|
         el = const_get(x.capitalize).new(params)
         @temp_stack.last.children << el unless @temp_stack.empty?
         el.parent = @temp_stack.last unless @temp_stack.empty?
@@ -40,9 +40,9 @@ module ShenmeGUI
     end
 
     def app(params={}, &block)
-      el = body(params, &block)
-      File.open('index.html', 'w'){ |f| f.write el.render }
-      el
+      instance_eval(&block)
+      File.open('index.html', 'w'){ |f| f.write elements[0].render }
+      nil
     end
 
   end
@@ -76,6 +76,8 @@ module ShenmeGUI
       `start file:///#{index_path}`
 
       ws_thread.join
+    rescue Interrupt
+      puts 'bye~'
     end
 
   end

@@ -1,37 +1,40 @@
 require '../lib/shenmegui'
 
 ShenmeGUI.app do
-  @b = button 'button1'
-  @b.onclick do
-    @b.value = "clicked"
-    @text.value = "ok"
-  end
+  body do
 
-  @s = stack do 
-    but = button 'change background'
-    but.onclick do
-      @s.style = "background-color: #ccc"
+    @b = button 'button1'
+    @b.onclick do
+      @b.value = "clicked"
+      @text.value = "ok"
     end
-    @text = textarea 'default'
-    @text.onblur do
-      this.value = "blur"
+
+    @s = stack do 
+      but = button 'change background'
+      but.onclick do
+        @s.style = "background-color: #ccc"
+      end
+      @text = textarea 'default'
+      @text.onblur do
+        this.value = "blur"
+      end
+      @text.onfocus do 
+        this.value = "focus"
+      end
     end
-    @text.onfocus do 
-      this.value = "focus"
+
+    @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
+    @src = textline @i.src
+    @src.onchange do
+      @i.src = @src.value
     end
-  end
 
-  @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
-  @src = textline @i.src
-  @src.onchange do
-    @i.src = @src.value
-  end
+    @t = textline 'textline'
+    @t.oninput do
+      @b.value = this.value
+    end
 
-  @t = textline 'textline'
-  @t.oninput do
-    @b.value = this.value
   end
-
 end
 
 ShenmeGUI::Server.start!

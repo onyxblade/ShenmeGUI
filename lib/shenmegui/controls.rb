@@ -1,7 +1,7 @@
 module ShenmeGUI
 
   class Control
-    attr_accessor :id, :type, :properties, :events, :children, :parent
+    attr_accessor :id, :properties, :events, :children, :parent
 
     def self.property(*arr)
       arr.each do |x|
@@ -51,16 +51,12 @@ module ShenmeGUI
       @events = {}
     end
 
-    def type
-      self.class.name.match(/(?:.*::)(.+)/)[1]
-    end
-
-    def render
-      gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0]
-      gem_path = gem_path.match(/(.*)\/lib/)[1]
+    def render(material = {})
+      gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
       template_path = gem_path + "/templates"
-      template = ::ERB.new File.open("#{template_path}/#{type}.erb", 'r') { |f| f.read }
-      content = self.children.collect{|x| x.render}.join("\n")
+      type = self.class.name.match(/(?:.*::)(.+)/)[1]
+      template = ::ERB.new File.read("#{template_path}/#{type}.erb")
+      content = children.collect{|x| x.render}.join("\n")
       template.result(binding)
     end
 
@@ -69,14 +65,10 @@ module ShenmeGUI
   class Body < Control
     def render
       gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
-      template_path = gem_path + "/templates"
       static_path = gem_path + "/static"
-      style = File.open("#{static_path}/semantic-ui-custom.css", 'r'){ |f| f.read }
-      style << File.open("#{static_path}/style.css", 'r'){ |f| f.read }
-      script = File.open("#{static_path}/script.js", 'r'){ |f| f.read }
-      template = ::ERB.new File.open("#{template_path}/#{type}.erb", 'r') { |f| f.read }
-      content = self.children.collect{|x| x.render}.join("\n")
-      template.result(binding)
+      style = %w{semantic-ui-custom style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
+      script = File.read("#{static_path}/script.js")
+      super({style: style, script: script})
     end
 
   end
@@ -109,6 +101,10 @@ module ShenmeGUI
   class Checkbox < Control
     property :value, :checked
 
+  end
+
+  class Progress < Control
+    property :value
   end
 
 end
