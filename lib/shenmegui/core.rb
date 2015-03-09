@@ -4,7 +4,7 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :this
 
-    %w{body stack flow button radio checkbox image select textline textarea label}.each do |x|
+    %w{body stack flow button radio checkbox image select textline textarea label progress}.each do |x|
       define_method x do |params={}, &block|
         el = const_get(x.capitalize).new(params)
         @temp_stack.last.children << el unless @temp_stack.empty?
@@ -25,9 +25,7 @@ module ShenmeGUI
       target = elements[id]
       case command
         when :sync
-          data.each do |k,v|
-            target.properties[k.to_sym] = v
-          end
+          target.properties.update(data)
         else
           event_lambda = elements[id].events[command]
           @this = elements[id]
@@ -50,36 +48,33 @@ module ShenmeGUI
   @elements = []
   @temp_stack = []
 
-  module Server
-    def self.start!
-      ws_thread = Thread.new do
-        EM.run do
-          EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
-            ws.onopen do
-              puts "WebSocket connection open"
-              ShenmeGUI::elements.each { |e| e.add_events }
-            end
-
-            ws.onclose { puts "Connection closed" }
-
-            ws.onmessage do |msg|
-              puts "Recieved message: #{msg}"
-              ShenmeGUI.handle msg
-            end
-            
-            ShenmeGUI.socket = ws
+  def self.start!
+    ws_thread = Thread.new do
+      EM.run do
+        EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
+          ws.onopen do
+            puts "WebSocket connection open"
+            elements.each { |e| e.add_events }
           end
+
+          ws.onclose { puts "Connection closed" }
+
+          ws.onmessage do |msg|
+            puts "Recieved message: #{msg}"
+            handle msg
+          end
+          
+          @socket = ws
         end
       end
-
-      index_path = "#{Dir.pwd}/index.html"
-      `start file:///#{index_path}`
-
-      ws_thread.join
-    rescue Interrupt
-      puts 'bye~'
     end
 
+    index_path = "#{Dir.pwd}/index.html"
+    `start file:///#{index_path}`
+
+    ws_thread.join
+  rescue Interrupt
+    puts 'bye~'
   end
 
 end

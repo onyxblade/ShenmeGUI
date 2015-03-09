@@ -2,7 +2,7 @@ module ShenmeGUI
 
   class Control
     attr_accessor :id, :properties, :events, :children, :parent
-
+    
     def self.property(*arr)
       arr.each do |x|
         define_method(x) do
@@ -14,9 +14,11 @@ module ShenmeGUI
           sync
         end
       end
+    end
 
+    def self.shortcut(prop)
       define_method(:initialize) do |x, params={}|
-        params.merge!({arr[0] => x})
+        params.merge!({prop => x})
         super(params)
       end
 
@@ -60,6 +62,8 @@ module ShenmeGUI
       template.result(binding)
     end
 
+    property :width, :height, :background, :visible
+
   end
 
   class Body < Control
@@ -74,17 +78,20 @@ module ShenmeGUI
   end
 
   class Button < Control
-    property :value
+    property :value, :state
+    shortcut :value
 
   end
 
   class Textline < Control
     property :value, :cursor
+    shortcut :value
 
   end
 
   class Textarea < Control
     property :value, :cursor
+    shortcut :value
 
   end
 
@@ -96,15 +103,23 @@ module ShenmeGUI
 
   class Image < Control
     property :src
+    shortcut :src
   end
 
   class Checkbox < Control
-    property :value, :checked
+    property :text, :checked
+    shortcut :text
 
   end
 
   class Progress < Control
-    property :value
+    property :percent, :text
+    shortcut :percent
+
   end
 
+  class Radio < Control
+    property :text, :checked
+    shortcut :text
+  end
 end

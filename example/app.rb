@@ -12,7 +12,7 @@ ShenmeGUI.app do
     @s = stack do 
       but = button 'change background'
       but.onclick do
-        @s.style = "background-color: #ccc"
+        @s.background = "#ccc"
       end
       @text = textarea 'default'
       @text.onblur do
@@ -34,7 +34,10 @@ ShenmeGUI.app do
       @b.value = this.value
     end
 
+    progress 15
+    checkbox 'check me'
+    radio 'a radio'
   end
 end
 
-ShenmeGUI::Server.start!
+ShenmeGUI.start!
