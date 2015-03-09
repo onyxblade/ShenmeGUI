@@ -36,7 +36,10 @@ module ShenmeGUI
         else
           event_lambda = elements[id].events[command]
           @this = elements[id]
-          ShenmeGUI.instance_exec(&event_lambda) if event_lambda 
+          result = ShenmeGUI.instance_exec(&event_lambda) if event_lambda
+          @this = nil
+          result
+
       end
       target
     end
@@ -109,7 +112,8 @@ module ShenmeGUI
       template_path = lib_path.match(/(.*)\/lib/)[1] + "/templates"
       if type == :body
         static_path = lib_path.match(/(.*)\/lib/)[1] + "/static"
-        style = File.open("#{static_path}/style.css", 'r'){ |f| f.read }
+        style = File.open("#{static_path}/semantic-ui-custom.css", 'r'){ |f| f.read }
+        style << File.open("#{static_path}/style.css", 'r'){ |f| f.read }
         script = File.open("#{static_path}/script.js", 'r'){ |f| f.read }
       end
       template = ::ERB.new File.open("#{template_path}/#{type}.erb", 'r') { |f| f.read }
