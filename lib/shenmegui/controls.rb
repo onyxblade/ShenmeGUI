@@ -2,7 +2,7 @@ module ShenmeGUI
   module Control
 
     class Base
-      attr_accessor :id, :properties, :events, :children, :parent
+      attr_accessor :id, :events, :children, :parent
       
       def self.property(*arr)
         arr.each do |x|
@@ -12,6 +12,7 @@ module ShenmeGUI
 
           define_method("#{x}=") do |v|
             @properties[x] = v
+            send(@validator[x]) if @validator[x]
             sync
           end
         end
@@ -36,6 +37,7 @@ module ShenmeGUI
 
       def sync
         data = @properties
+        validate @properties
         msg = "sync:#{@id}->#{data.to_json}"
         ShenmeGUI.socket.send(msg)
       end
@@ -52,6 +54,7 @@ module ShenmeGUI
         ShenmeGUI.elements << self
         @children = []
         @events = {}
+        @validator = {}
       end
 
       def render(material = {})
@@ -61,6 +64,9 @@ module ShenmeGUI
         template = ::ERB.new File.read("#{template_path}/#{type}.erb")
         content = children.collect{|x| x.render}.join("\n")
         template.result(binding)
+      end
+
+      def validate(params)
       end
 
       property :width, :height, :background, :visible
@@ -117,6 +123,10 @@ module ShenmeGUI
       property :percent, :text
       shortcut :percent
 
+      def validate(params)
+        params[:percent] = 0 if params[:percent] < 0
+        params[:percent] = 100 if params[:percent] > 100
+      end
     end
 
 #    class Radio < Base
