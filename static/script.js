@@ -53,6 +53,14 @@ function getId(obj){
 	}
 })();
 
+var syncHandlers = (function(){
+	function button(target, data){
+		target.value = data.value;
+
+	}
+
+})();
+
 function handleMessage(msg){
 	var match_data = msg.match(/(.+?):(\d+)(?:->)?(.+)?/);
 	var command = match_data[1];

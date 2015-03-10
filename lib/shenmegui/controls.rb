@@ -79,20 +79,20 @@ module ShenmeGUI
     end
 
     class Button < Base
-      property :value, :state
-      shortcut :value
+      property :text, :state
+      shortcut :text
 
     end
 
     class Textline < Base
-      property :value, :cursor
-      shortcut :value
+      property :text, :cursor
+      shortcut :text
 
     end
 
     class Textarea < Base
-      property :value, :cursor
-      shortcut :value
+      property :text, :cursor
+      shortcut :text
 
     end
 
@@ -119,10 +119,10 @@ module ShenmeGUI
 
     end
 
-    class Radio < Base
-      property :text, :checked
-      shortcut :text
-    end
+#    class Radio < Base
+#      property :text, :checked
+#      shortcut :text
+#    end
 
     controls = constants.reject{|x| x==:Base}
     controls.each do |x|

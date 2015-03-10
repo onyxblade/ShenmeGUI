@@ -5,8 +5,8 @@ ShenmeGUI.app do
 
     @b = button 'button1'
     @b.onclick do
-      @b.value = "clicked"
-      @text.value = "ok"
+      @b.text = "clicked"
+      @text.text = "ok"
     end
 
     @s = stack do 
@@ -16,27 +16,26 @@ ShenmeGUI.app do
       end
       @text = textarea('default', width: '100px')
       @text.onblur do
-        this.value = "blur"
+        this.text = "blur"
       end
       @text.onfocus do 
-        this.value = "focus"
+        this.text = "focus"
       end
     end
 
     @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
     @src = textline @i.src
     @src.onchange do
-      @i.src = @src.value
+      @i.src = @src.text
     end
 
     @t = textline 'textline'
     @t.oninput do
-      @b.value = this.value
+      @b.text = this.text
     end
 
     progress 15
     checkbox 'check me' 
-    radio 'a radio'
   end
 end
 
