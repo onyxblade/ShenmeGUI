@@ -8,7 +8,10 @@ module ShenmeGUI
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
-      data = JSON.parse(match_data[3]) unless match_data[3].nil?
+      if match_data[3]
+        data = JSON.parse(match_data[3])
+        data = Hash[data.keys.collect(&:to_sym).zip(data.values)]
+      end
       target = elements[id]
       case command
         when :sync
@@ -41,7 +44,7 @@ module ShenmeGUI
         EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
           ws.onopen do
             puts "WebSocket connection open"
-            elements.each { |e| e.add_events }
+            elements.each { |e| e.add_events; e.sync }
           end
 
           ws.onclose { puts "Connection closed" }

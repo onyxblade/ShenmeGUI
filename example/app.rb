@@ -35,7 +35,6 @@ ShenmeGUI.app do
     end
 
     progress 15
-    checkbox 'check me' 
   end
 end
 

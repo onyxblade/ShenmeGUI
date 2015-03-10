@@ -17,11 +17,35 @@ var websocket =
 })();
 
 function sync(obj){
-	var value = {value: obj.value};
-	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(value));
+	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(obj.properties));
+}
+
+var changeListeners = {
+	textline: {
+		event: 'input',
+		function: (function(){
+			this.properties.text = this.value;
+			sync(this);
+		})
+	},
+
+	textarea: {
+		event: 'input',
+		function: (function(){
+			this.properties.text = this.value;
+			sync(this);
+		})
+	}
+}
+
+function addChangeListener(obj){
+	var type = obj.getAttribute('data-type');
+	changeListener = changeListeners[type];
+	if(changeListener)	obj.addEventListener(changeListener.event, changeListener.function);
 }
 
 function addEvents(obj, events){
+	addChangeListener(obj);
 	for(i in events){
 		(function(){
 			var type = events[i];
@@ -36,30 +60,36 @@ function getId(obj){
 	return obj.id.match(/item-(\d+)/)[1];
 }
 
-(function addSyncListener(){
-	var inputs = document.getElementsByTagName('input');
-	for(var i=0; i<inputs.length; i++){
-		inputs[i].addEventListener('input', function(){
-			sync(this);
-			websocket.send("input:" + getId(this));
-		});
-	}
-	var inputs = document.getElementsByTagName('textarea');
-	for(var i=0; i<inputs.length; i++){
-		inputs[i].addEventListener('input', function(){
-			sync(this);
-			websocket.send("input:" + getId(this));
-		});
-	}
-})();
+var syncHandlers = {
+	
+	body: (function(target, data){
 
-var syncHandlers = (function(){
-	function button(target, data){
-		target.value = data.value;
+	}),
 
-	}
+	button: (function(target, data){
+		target.innerText = data.text;
+	}),
 
-})();
+	textline: (function(target, data){
+		target.value = data.text;
+	}),
+
+	textarea: (function(target, data){
+		target.value = data.text;
+	}),
+
+	image: (function(target, data){
+		target.src = data.src;
+	}),
+
+	div: (function(target, data){
+
+	}),
+
+	progress: (function(target, data){
+
+	})
+};
 
 function handleMessage(msg){
 	var match_data = msg.match(/(.+?):(\d+)(?:->)?(.+)?/);
@@ -69,9 +99,8 @@ function handleMessage(msg){
 	switch (command){
 		case 'sync':
 			target.properties = data;
-			if(data.value != undefined && data.value != null)	target.value = data.value;
-			if(data.style != undefined && data.style != null)	target.style.cssText = data.style;
-			if(data.src != undefined && data.src != null)	target.src = data.src;
+			var type = target.getAttribute('data-type');
+			syncHandlers[type](target, data);
 			break;
 		case 'add_event':
 			addEvents(target, data);
