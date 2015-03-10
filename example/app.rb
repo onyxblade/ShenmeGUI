@@ -37,6 +37,8 @@ ShenmeGUI.app do
     @pro = progress 15
     button('-').onclick{ @pro.percent -= 5}
     button('+').onclick{ @pro.percent += 5}
+
+    checkbox 'check me', checked: true
   end
 end
 

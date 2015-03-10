@@ -2,7 +2,7 @@ module ShenmeGUI
   module Control
 
     class Base
-      attr_accessor :id, :events, :children, :parent
+      attr_accessor :id, :properties, :events, :children, :parent
       
       def self.property(*arr)
         arr.each do |x|

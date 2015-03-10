@@ -8,4 +8,6 @@ body {
 .flow * {
   display: inline; }
 
-/*# sourceMappingURL=style.css.map */
+.ui.checkbox .checkbox {
+	z-index: 100 !important;
+}

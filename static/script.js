@@ -35,6 +35,14 @@ var changeListeners = {
 			this.properties.text = this.value;
 			sync(this);
 		})
+	},
+
+	checkbox: {
+		event: 'change',
+		function: (function(){
+			this.properties.checked = this.getElementsByClassName('checkbox')[0].checked;
+			sync(this);
+		})
 	}
 }
 
@@ -94,6 +102,14 @@ var syncHandlers = {
 		bar.style.width = data.percent.toString() + '%';
 		if(data.text) label.innerText = data.text;
 		progress.innerText = data.percent.toString() + '%';
+	}),
+
+	checkbox: (function(target, data){
+		var label, checkbox;
+		label = target.getElementsByTagName('label')[0];
+		checkbox = target.getElementsByClassName('checkbox')[0];
+		label.innerText = data.text;
+		if(data.checked != undefined) checkbox.checked = data.checked;
 	})
 };
 
