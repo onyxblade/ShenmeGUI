@@ -87,7 +87,17 @@ var syncHandlers = {
 	}),
 
 	progress: (function(target, data){
-
+		var label, bar, progress;
+		for(var i=0;i<target.childElementCount;i++){
+			if(target.children[i].className=="label") label=target.children[i];
+			if(target.children[i].className=="bar") bar=target.children[i];
+		}
+		for(var i=0;i<bar.childElementCount;i++){
+			if(bar.children[i].className=="progress") progress=bar.children[i];
+		}
+		bar.style.width = data.percent.toString() + '%';
+		if(data.text) label.innerText = data.text;
+		progress.innerText = data.percent.toString() + '%';
 	})
 };
 

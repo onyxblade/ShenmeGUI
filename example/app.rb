@@ -34,7 +34,9 @@ ShenmeGUI.app do
       @b.text = this.text
     end
 
-    progress 15
+    @pro = progress 15
+    button('-').onclick{ @pro.percent -= 5}
+    button('+').onclick{ @pro.percent += 5}
   end
 end
 
