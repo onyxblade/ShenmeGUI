@@ -1,6 +1,5 @@
 
 module ShenmeGUI
-
   module Control
 
     class Base
@@ -148,10 +147,10 @@ module ShenmeGUI
       end
     end
 
-#    class Radio < Base
-#      property :text, :checked
-#      shortcut :text
-#    end
+    class Radio < Base
+      property :options, :checked
+      shortcut :options
+    end
 
     class Select < Base
       property :options, :checked

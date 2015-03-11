@@ -51,6 +51,14 @@ var changeListeners = {
 			this.properties.checked = this.value;
 			sync(this);
 		})
+	},
+
+	radio: {
+		event: 'change',
+		function: (function(){
+			this.properties.checked = this.elements['radio'].value;
+			sync(this);
+		})
 	}
 }
 
@@ -125,6 +133,25 @@ var syncHandlers = {
 			var option = document.createElement('option');
 			option.value = data.options[i];
 			option.innerText = data.options[i];
+			target.appendChild(option);
+		}
+	}),
+
+	radio: (function(target, data){
+		var options = target.children;
+		for(var i=0;i<options.length;) target.removeChild(options[i]);
+		for(var i=0;i<data.options.length;i++){
+			var option = document.createElement('div');
+			option.className="ui radio checkbox";
+			var input = document.createElement('input');
+			var label = document.createElement('label');
+			input.type="radio";
+			input.value = data.options[i];
+			input.className = "checkbox";
+			input.name = "radio";
+			label.innerText = data.options[i];
+			option.appendChild(input);
+			option.appendChild(label);
 			target.appendChild(option);
 		}
 	})

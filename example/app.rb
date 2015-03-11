@@ -3,6 +3,8 @@ require '../lib/shenmegui'
 ShenmeGUI.app do
   body do
     @sel = select %w{1 2 3}
+    radio %w{option1 option2 option3}
+    radio %w{option7 option8 option9}
 
     @b = button 'button1'
     @b.onclick do

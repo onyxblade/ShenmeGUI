@@ -1,13 +1,20 @@
 body {
   margin: 50px;
-  width: 600px; }
+  width: 600px;
+}
 
-.stack * {
-  display: block; }
+.stack>* {
+  display: block !important;
+}
 
-.flow * {
-  display: inline; }
+.flow>* {
+  display: inline !important;
+}
 
 .ui.checkbox .checkbox {
+	z-index: 100 !important;
+}
+
+.ui.radio.checkbox .radio {
 	z-index: 100 !important;
 }
