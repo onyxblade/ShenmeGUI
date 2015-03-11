@@ -4,13 +4,24 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :this
 
+    def hook(obj)
+      case obj
+        when String
+          HookedString.new(obj, self)
+        when Array
+          HookedArray.new(obj, self)
+        else
+          obj
+      end
+    end
+      
     def handle(msg)
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
       if match_data[3]
         data = JSON.parse(match_data[3])
-        data = Hash[data.keys.collect(&:to_sym).zip(data.values)]
+        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook x})]
       end
       target = elements[id]
       case command

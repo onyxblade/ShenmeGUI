@@ -43,6 +43,14 @@ var changeListeners = {
 			this.properties.checked = this.getElementsByClassName('checkbox')[0].checked;
 			sync(this);
 		})
+	},
+
+	select: {
+		event: 'change',
+		function: (function(){
+			this.properties.checked = this.value;
+			sync(this);
+		})
 	}
 }
 
@@ -95,21 +103,30 @@ var syncHandlers = {
 	}),
 
 	progress: (function(target, data){
-		var label, bar, progress;
-		label = target.getElementsByClassName('label')[0];
-		bar = target.getElementsByClassName('bar')[0];
-		progress = target.getElementsByClassName('progress')[0];
+		var label = target.getElementsByClassName('label')[0];
+		var bar = target.getElementsByClassName('bar')[0];
+		var progress = target.getElementsByClassName('progress')[0];
 		bar.style.width = data.percent.toString() + '%';
 		if(data.text) label.innerText = data.text;
 		progress.innerText = data.percent.toString() + '%';
 	}),
 
 	checkbox: (function(target, data){
-		var label, checkbox;
-		label = target.getElementsByTagName('label')[0];
-		checkbox = target.getElementsByClassName('checkbox')[0];
+		var label = target.getElementsByTagName('label')[0];
+		var checkbox = target.getElementsByClassName('checkbox')[0];
 		label.innerText = data.text;
 		if(data.checked != undefined) checkbox.checked = data.checked;
+	}),
+
+	select: (function(target, data){
+		var options = target.getElementsByTagName('option');
+		for(var i=0;i<options.length;) target.removeChild(options[i]);
+		for(var i=0;i<data.options.length;i++){
+			var option = document.createElement('option');
+			option.value = data.options[i];
+			option.innerText = data.options[i];
+			target.appendChild(option);
+		}
 	})
 };
 

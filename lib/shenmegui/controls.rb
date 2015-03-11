@@ -1,9 +1,22 @@
+
 module ShenmeGUI
+
   module Control
 
     class Base
       attr_accessor :id, :properties, :events, :children, :parent
-      
+
+      def hook(obj)
+        case obj
+          when String
+            HookedString.new(obj, self)
+          when Array
+            HookedArray.new(obj, self)
+          else
+            obj
+        end
+      end
+
       def self.property(*arr)
         arr.each do |x|
           define_method(x) do
@@ -11,6 +24,7 @@ module ShenmeGUI
           end
 
           define_method("#{x}=") do |v|
+            v = hook v
             @properties[x] = v
             send(@validator[x]) if @validator[x]
             sync
@@ -20,6 +34,7 @@ module ShenmeGUI
 
       def self.shortcut(prop)
         define_method(:initialize) do |x=nil, params={}|
+          x = hook x
           params.merge!({prop => x})
           super(params)
         end
@@ -100,6 +115,10 @@ module ShenmeGUI
       property :text, :cursor
       shortcut :text
 
+      def <<(t)
+        text << t
+        sync
+      end
     end
 
     class Stack < Base
@@ -133,6 +152,11 @@ module ShenmeGUI
 #      property :text, :checked
 #      shortcut :text
 #    end
+
+    class Select < Base
+      property :options, :checked
+      shortcut :options
+    end
 
     controls = constants.reject{|x| x==:Base}
     controls.each do |x|

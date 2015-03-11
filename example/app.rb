@@ -2,19 +2,18 @@ require '../lib/shenmegui'
 
 ShenmeGUI.app do
   body do
+    @sel = select %w{1 2 3}
 
     @b = button 'button1'
     @b.onclick do
       @b.text = "clicked"
-      @text.text = "ok"
+      @text << " ok"
+      @t.text[0] = '1'
+      @sel.options.pop
     end
 
     @s = stack do 
-      but = button 'change background'
-      but.onclick do
-        @s.background = "#ccc"
-      end
-      @text = textarea('default', width: '100px')
+      @text = textarea('default')
       @text.onblur do
         this.text = "blur"
       end
@@ -39,6 +38,7 @@ ShenmeGUI.app do
     button('+').onclick{ @pro.percent += 5}
 
     checkbox 'check me', checked: true
+
   end
 end
 
