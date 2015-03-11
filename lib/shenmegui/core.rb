@@ -38,17 +38,17 @@ module ShenmeGUI
     end
 
   end
-  
+
   class << self
     attr_accessor :elements, :socket
     attr_reader :this
 
-    def hook(obj)
+    def hook(obj, target)
       case obj
         when String
-          HookedString.new(obj, self)
+          HookedString.new(obj, target)
         when Array
-          HookedArray.new(obj, self)
+          HookedArray.new(obj, target)
         else
           obj
       end
@@ -58,11 +58,11 @@ module ShenmeGUI
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
+      target = elements[id]
       if match_data[3]
         data = JSON.parse(match_data[3])
-        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook x})]
+        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook(x, target)})]
       end
-      target = elements[id]
       case command
         when :sync
           target.properties.update(data)
