@@ -56,6 +56,11 @@ module ShenmeGUI
         ShenmeGUI.socket.send(msg)
       end
 
+      def update(data)
+        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook(x)})]
+        @properties.update(data)
+      end
+
       def add_events
         data = @events.keys
         msg = "add_event:#{@id}->#{data.to_json}"

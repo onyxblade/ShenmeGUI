@@ -44,4 +44,6 @@ ShenmeGUI.app do
   end
 end
 
+ShenmeGUI.debug!
+
 ShenmeGUI.start!

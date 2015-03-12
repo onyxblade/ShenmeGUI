@@ -43,35 +43,20 @@ module ShenmeGUI
     attr_accessor :elements, :socket
     attr_reader :this
 
-    def hook(obj, target)
-      case obj
-        when String
-          HookedString.new(obj, target)
-        when Array
-          HookedArray.new(obj, target)
-        else
-          obj
-      end
-    end
-
     def handle(msg)
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
       target = elements[id]
-      if match_data[3]
-        data = JSON.parse(match_data[3])
-        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook(x, target)})]
-      end
+      data = JSON.parse(match_data[3]) if match_data[3]
       case command
         when :sync
-          target.properties.update(data)
+          target.update(data)
         else
-          event_lambda = elements[id].events[command]
+          event_lambda = target.events[command]
           @this = elements[id]
-          result = ShenmeGUI.instance_exec(&event_lambda) if event_lambda
+          ShenmeGUI.instance_exec(&event_lambda) if event_lambda
           @this = nil
-          result
 
       end
       target
@@ -87,6 +72,23 @@ module ShenmeGUI
 
   @elements = []
   @temp_stack = []
+
+  def self.debug!
+    Thread.new do
+      ShenmeGUI.instance_eval do
+        bind = binding
+        while true
+          begin
+            command = $stdin.gets.chomp
+            result = eval command, bind
+            $stdout << "=> #{result}\n"
+          rescue
+          end
+        end
+      end
+
+    end
+  end
 
   def self.start!
     ws_thread = Thread.new do
