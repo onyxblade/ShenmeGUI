@@ -68,6 +68,21 @@ module ShenmeGUI
       nil
     end
 
+    def alert(msg)
+      data = {message: msg}
+      @socket.send("alert:0->#{data.to_json}")
+    end
+
+    def confirm(msg)
+      data = {message: msg}
+      @socket.send("confirm:0->#{data.to_json}")
+    end
+
+    def prompt(text, value)
+      data = {text: text, value: value}
+      @socket.send("prompt:0->#{data.to_json}")
+    end
+    
   end
 
   @elements = []

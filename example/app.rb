@@ -7,6 +7,8 @@ ShenmeGUI.app do
     radio %w{option1 option2 option3}
     radio %w{option7 option8 option9}
 
+    button('alert').onclick { alert 'test message'}
+    
     @b = button 'button1'
     @b.onclick do
       @b.text = "clicked"

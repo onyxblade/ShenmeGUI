@@ -171,5 +171,14 @@ function handleMessage(msg){
 		case 'add_event':
 			addEvents(target, data);
 			break;
+		case 'alert':
+			window.alert(data.message);
+			break;
+		case 'comfirm':
+			window.confirm(data.message);
+			break;
+		case 'prompt':
+			window.prompt(data.text, data.value);
+			break;
 	}
 }
