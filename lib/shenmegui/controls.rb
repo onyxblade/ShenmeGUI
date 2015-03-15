@@ -96,7 +96,7 @@ module ShenmeGUI
       def render
         gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
         static_path = gem_path + "/static"
-        style = %w{semantic-ui-custom style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
+        style = %w{style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
         script = File.read("#{static_path}/script.js")
         super({style: style, script: script})
       end

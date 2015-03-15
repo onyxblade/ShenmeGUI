@@ -16,6 +16,21 @@ var websocket =
 	return websocket;
 })();
 
+Element.prototype.g = function(e){
+	e = e.split(' ');
+	result = this;
+	for(var i=0;i<e.length;i++){
+		if(e[i][0]=='.'){
+			result = result.getElementsByClassName(e[i].substr(1));
+		} else if(e[i][0]=='#'){
+			result = document.getElementById(e[i].substr(1));
+		} else {
+			result = result.getElementsByTagName(e[i]);
+		}
+	}
+	return result;
+}
+
 function sync(obj){
 	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(obj.properties));
 }
@@ -24,7 +39,7 @@ var changeListeners = {
 	textline: {
 		event: 'input',
 		function: (function(){
-			this.properties.text = this.value;
+			this.properties.text = this.getElementsByTagName('input')[0].value;
 			sync(this);
 		})
 	},
@@ -32,7 +47,7 @@ var changeListeners = {
 	textarea: {
 		event: 'input',
 		function: (function(){
-			this.properties.text = this.value;
+			this.properties.text = this.getElementsByTagName('textarea')[0].value;
 			sync(this);
 		})
 	},
@@ -48,7 +63,7 @@ var changeListeners = {
 	select: {
 		event: 'change',
 		function: (function(){
-			this.properties.checked = this.value;
+			this.properties.checked = this.getElementsByTagName('select')[0].value;
 			sync(this);
 		})
 	},
@@ -91,19 +106,19 @@ var syncHandlers = {
 	}),
 
 	button: (function(target, data){
-		target.innerText = data.text;
+		target.getElementsByTagName('button')[0].innerText = data.text;
 	}),
 
 	textline: (function(target, data){
-		target.value = data.text;
+		target.getElementsByTagName('input')[0].value = data.text;
 	}),
 
 	textarea: (function(target, data){
-		target.value = data.text;
+		target.getElementsByTagName('textarea')[0].value = data.text;
 	}),
 
 	image: (function(target, data){
-		target.src = data.src;
+		target.getElementsByTagName('img')[0].src = data.src;
 	}),
 
 	div: (function(target, data){
@@ -127,13 +142,14 @@ var syncHandlers = {
 	}),
 
 	select: (function(target, data){
-		var options = target.getElementsByTagName('option');
-		for(var i=0;i<options.length;) target.removeChild(options[i]);
+		var select = target.getElementsByTagName('select')[0];
+		var options = select.getElementsByTagName('option');
+		for(var i=0;i<options.length;) select.removeChild(options[i]);
 		for(var i=0;i<data.options.length;i++){
 			var option = document.createElement('option');
 			option.value = data.options[i];
 			option.innerText = data.options[i];
-			target.appendChild(option);
+			select.appendChild(option);
 		}
 	}),
 

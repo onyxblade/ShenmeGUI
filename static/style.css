@@ -1,17 +1,15 @@
 body {
   margin: 50px;
   width: 600px;
-}
+  background-color: #f2f3f5; }
 
-.stack>* {
-  display: block !important;
-}
+.stack * {
+  display: block !important; }
 
-.flow>* {
-  display: inline !important;
-}
+.flow * {
+  display: inline !important; }
 
-.ui.checkbox .checkbox {
-	z-index: 100 !important;
-}
+.image img {
+  width: 100%; }
 
+/*# sourceMappingURL=style.css.map */

@@ -1,2 +1,4 @@
 example/index.html
 *.gem
+static/style.css.map
+static/.sass-cache/
