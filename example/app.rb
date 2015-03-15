@@ -44,7 +44,7 @@ ShenmeGUI.app do
     button('-').onclick{ @pro.percent -= 5}
     button('+').onclick{ @pro.percent += 5}
 
-    checkbox 'check me', checked: true
+    checkbox ['check me', 'and me'], checked:['check me']
 
   end
 end

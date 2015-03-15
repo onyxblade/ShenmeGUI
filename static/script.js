@@ -55,7 +55,12 @@ var changeListeners = {
 	checkbox: {
 		event: 'change',
 		function: (function(){
-			this.properties.checked = this.getElementsByClassName('checkbox')[0].checked;
+			var options = this.getElementsByTagName('input');
+			var checked = [];
+			for(var i=0;i<options.length;i++){
+				if(options[i].checked==true) checked.push(options[i].value);
+			}
+			this.properties.checked = checked;
 			sync(this);
 		})
 	},
@@ -135,10 +140,24 @@ var syncHandlers = {
 	}),
 
 	checkbox: (function(target, data){
-		var label = target.getElementsByTagName('label')[0];
-		var checkbox = target.getElementsByClassName('checkbox')[0];
-		label.innerText = data.text;
-		if(data.checked != undefined) checkbox.checked = data.checked;
+		for(var i=0;i<target.children.length;){
+			target.removeChild(children[i]);
+		}
+		for(var i=0;i<data.options.length;i++){
+			var input = document.createElement('input');
+			input.type = 'checkbox';
+			input.value = data.options[i];
+			var label = document.createElement('label');
+			label.innerText = data.options[i];
+			target.appendChild(input);
+			target.appendChild(label);
+			if(data.checked!=undefined){
+				for(var j=0;j<data.checked.length;j++){
+					if(data.checked[j] == data.options[i]) input.checked = true;
+				}
+			}
+		}
+		
 	}),
 
 	select: (function(target, data){

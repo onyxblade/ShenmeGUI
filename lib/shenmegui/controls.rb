@@ -137,8 +137,8 @@ module ShenmeGUI
     end
 
     class Checkbox < Base
-      property :text, :checked
-      shortcut :text
+      property :options, :checked
+      shortcut :options
 
     end
 
