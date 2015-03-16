@@ -63,7 +63,7 @@ module ShenmeGUI
     end
 
     def app(params={}, &block)
-      instance_eval(&block)
+      body(params, &block)
       File.open('index.html', 'w'){ |f| f.write elements[0].render }
       nil
     end
@@ -73,16 +73,11 @@ module ShenmeGUI
       @socket.send("alert:0->#{data.to_json}")
     end
 
-    def confirm(msg)
-      data = {message: msg}
-      @socket.send("confirm:0->#{data.to_json}")
-    end
-
-    def prompt(text, value)
-      data = {text: text, value: value}
-      @socket.send("prompt:0->#{data.to_json}")
-    end
-
+#    def data_url(path)
+#      extension = path.match(/\.(.+)$/)[1]
+#      file = File.open(path, 'r'){|f| f.read}
+#      "data:image/#{extension.downcase};base64,#{Base64.encode64(file)}"
+#    end
   end
 
   @elements = []

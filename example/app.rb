@@ -1,8 +1,8 @@
 require '../lib/shenmegui'
 
 ShenmeGUI.app do
-  body do
-    button('open file').onclick { @text.text = ShenmeGUI::FileDialog.get_open_file_name }
+  form title: 'test' do
+    button('open file').onclick { @text.text = ShenmeGUI::FileDialog.get_open_file_name; @i.src="file:///#{@text.text}" }
     @sel = select %w{1 2 3}
     flow do
       radio %w{option1 option2 option3}
@@ -19,8 +19,8 @@ ShenmeGUI.app do
       @sel.options.pop
     end
 
-    @s = stack do 
-      @text = textarea('default')
+    stack do 
+      @text = textarea('default', width: '100%')
       @text.onblur do
         this.text = "blur"
       end
@@ -28,7 +28,7 @@ ShenmeGUI.app do
         this.text = "focus"
       end
     end
-
+    
     @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
     @src = textline @i.src
     @src.onchange do

@@ -16,22 +16,6 @@ var websocket =
 	return websocket;
 })();
 
-Element.prototype.g = function(e){
-	e = e.split(' ');
-	result = this;
-	for(var i=0;i<e.length;i++){
-		if(e[i][0]=='.'){
-			result = result.getElementsByClassName(e[i].substr(1));
-		} else if(e[i][0]=='#'){
-			result = document.getElementById(e[i].substr(1));
-		} else {
-			result = result.getElementsByTagName(e[i]);
-		}
-	}
-	return result;
-}
-document.g = Element.prototype.g;
-
 function sync(obj){
 	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(obj.properties));
 }
@@ -69,7 +53,7 @@ var changeListeners = {
 	select: {
 		event: 'change',
 		function: (function(){
-			this.properties.checked = this.getElementsByTagName('select')[0].value;
+			this.properties.checked = this.value;
 			sync(this);
 		})
 	},
@@ -106,9 +90,19 @@ function getId(obj){
 }
 
 var syncHandlers = {
-	
+	base: (function(target, data){
+		var properties = ['width', 'height', 'font', 'margin', 'background', 'border'];
+		for(var i=0;i<properties.length;i++){
+			if(data[properties[i]]!=undefined) target.style[properties[i]] = data[properties[i]];
+		}
+	}),
+
 	body: (function(target, data){
 
+	}),
+
+	form: (function(target, data){
+		target.getElementsByClassName('title').getElementsByTagName('span')[0].innerText = data.title;
 	}),
 
 	button: (function(target, data){
@@ -195,11 +189,12 @@ function handleMessage(msg){
 	var match_data = msg.match(/(.+?):(\d+)(?:->)?(.+)?/);
 	var command = match_data[1];
 	var target = document.getElementById('item-' + match_data[2]);
-	var data = JSON.parse(match_data[3]);
+	if(match_data[3]) var data = JSON.parse(match_data[3]);
 	switch (command){
 		case 'sync':
 			target.properties = data;
 			var type = target.getAttribute('data-type');
+			syncHandlers.base(target, data);
 			syncHandlers[type](target, data);
 			break;
 		case 'add_event':
@@ -208,11 +203,8 @@ function handleMessage(msg){
 		case 'alert':
 			window.alert(data.message);
 			break;
-		case 'comfirm':
-			window.confirm(data.message);
-			break;
-		case 'prompt':
-			window.prompt(data.text, data.value);
+		case 'focus':
+			target.focus();
 			break;
 	}
 }

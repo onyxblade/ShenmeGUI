@@ -25,7 +25,6 @@ module ShenmeGUI
           define_method("#{x}=") do |v|
             v = hook v
             @properties[x] = v
-            send(@validator[x]) if @validator[x]
             sync
           end
         end
@@ -40,7 +39,7 @@ module ShenmeGUI
 
       end
 
-      available_events = %w{click input dblclick mouseover mouseout blur focus mousemove change}.collect(&:to_sym)
+      available_events = %w{click input dblclick mouseover mouseout blur focus mousemove mousedown mouseup change}.collect(&:to_sym)
       available_events.each do |x|
         define_method("on#{x}") do |&block|
           return events[x] if block.nil?
@@ -56,6 +55,11 @@ module ShenmeGUI
         ShenmeGUI.socket.send(msg)
       end
 
+      def focus
+        msg = "focus:#{@id}"
+        ShenmeGUI.socket.send(msg)
+      end
+
       def update(data)
         data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook(x)})]
         @properties.update(data)
@@ -68,12 +72,11 @@ module ShenmeGUI
       end
 
       def initialize(params={})
-        @properties = params
+        @properties = Hash[params.keys.collect(&:to_sym).zip(params.values.collect{|x| hook(x)})]
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
         @children = []
         @events = {}
-        @validator = {}
       end
 
       def render(material = {})
@@ -88,7 +91,7 @@ module ShenmeGUI
       def validate(params)
       end
 
-      property :width, :height, :background, :visible
+      property :width, :height, :font, :background, :margin, :border
 
     end
 
@@ -101,6 +104,10 @@ module ShenmeGUI
         super({style: style, script: script})
       end
 
+    end
+
+    class Form < Base
+      property :title
     end
 
     class Button < Base
@@ -120,7 +127,7 @@ module ShenmeGUI
       shortcut :text
 
       def <<(t)
-        text << t
+        text << "\n#{t}"
         sync
       end
     end
@@ -139,11 +146,10 @@ module ShenmeGUI
     class Checkbox < Base
       property :options, :checked
       shortcut :options
-
     end
 
     class Progress < Base
-      property :percent, :text
+      property :percent
       shortcut :percent
 
       def validate(params)

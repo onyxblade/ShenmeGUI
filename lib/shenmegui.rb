@@ -1,6 +1,7 @@
 require 'erb'
 require 'json'
 require 'em-websocket'
+require 'base64'
 require_relative 'shenmegui/core'
 require_relative 'shenmegui/controls'
 require_relative 'shenmegui/file_dialog'

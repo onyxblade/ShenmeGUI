@@ -73,6 +73,7 @@ module ShenmeGUI
       path = path.split("\0")
       path = path[1..-1].collect{|x| "#{path[0]}\\#{x}"} if path.size > 1
       path.collect{|x| x.force_encoding('GBK').encode('UTF-8')}
+      path.size > 1 ? path : path[0]
     end
 
     def self.get_save_file_name(params={})
