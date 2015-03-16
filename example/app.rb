@@ -7,7 +7,7 @@ ShenmeGUI.app do
     flow do
       radio %w{option1 option2 option3}
     end
-    radio %w{option7 option8 option9}
+    radio %w{option7 option8 option9}, checked: 'option9'
 
     button('alert').onclick { alert 'test message'}
 

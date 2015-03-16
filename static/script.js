@@ -30,6 +30,7 @@ Element.prototype.g = function(e){
 	}
 	return result;
 }
+document.g = Element.prototype.g;
 
 function sync(obj){
 	websocket.send("sync:" + getId(obj) + "->" + JSON.stringify(obj.properties));
@@ -39,7 +40,7 @@ var changeListeners = {
 	textline: {
 		event: 'input',
 		function: (function(){
-			this.properties.text = this.getElementsByTagName('input')[0].value;
+			this.properties.text = this.value;
 			sync(this);
 		})
 	},
@@ -47,7 +48,7 @@ var changeListeners = {
 	textarea: {
 		event: 'input',
 		function: (function(){
-			this.properties.text = this.getElementsByTagName('textarea')[0].value;
+			this.properties.text = this.value;
 			sync(this);
 		})
 	},
@@ -111,19 +112,19 @@ var syncHandlers = {
 	}),
 
 	button: (function(target, data){
-		target.getElementsByTagName('button')[0].innerText = data.text;
+		target.innerText = data.text;
 	}),
 
 	textline: (function(target, data){
-		target.getElementsByTagName('input')[0].value = data.text;
+		target.value = data.text;
 	}),
 
 	textarea: (function(target, data){
-		target.getElementsByTagName('textarea')[0].value = data.text;
+		target.value = data.text;
 	}),
 
 	image: (function(target, data){
-		target.getElementsByTagName('img')[0].src = data.src;
+		target.src = data.src;
 	}),
 
 	div: (function(target, data){
@@ -131,26 +132,23 @@ var syncHandlers = {
 	}),
 
 	progress: (function(target, data){
-		var label = target.getElementsByClassName('label')[0];
 		var bar = target.getElementsByClassName('bar')[0];
-		var progress = target.getElementsByClassName('progress')[0];
 		bar.style.width = data.percent.toString() + '%';
-		if(data.text) label.innerText = data.text;
-		progress.innerText = data.percent.toString() + '%';
 	}),
 
 	checkbox: (function(target, data){
-		for(var i=0;i<target.children.length;){
-			target.removeChild(children[i]);
-		}
+		var options = target.children;
+		for(var i=0;i<options.length;) target.removeChild(options[i]);
 		for(var i=0;i<data.options.length;i++){
+			var option = document.createElement('div');
 			var input = document.createElement('input');
+			var label = document.createElement('label');
 			input.type = 'checkbox';
 			input.value = data.options[i];
-			var label = document.createElement('label');
 			label.innerText = data.options[i];
-			target.appendChild(input);
-			target.appendChild(label);
+			option.appendChild(input);
+			option.appendChild(label);
+			target.appendChild(option);
 			if(data.checked!=undefined){
 				for(var j=0;j<data.checked.length;j++){
 					if(data.checked[j] == data.options[i]) input.checked = true;
@@ -160,36 +158,37 @@ var syncHandlers = {
 		
 	}),
 
-	select: (function(target, data){
-		var select = target.getElementsByTagName('select')[0];
-		var options = select.getElementsByTagName('option');
-		for(var i=0;i<options.length;) select.removeChild(options[i]);
-		for(var i=0;i<data.options.length;i++){
-			var option = document.createElement('option');
-			option.value = data.options[i];
-			option.innerText = data.options[i];
-			select.appendChild(option);
-		}
-	}),
-
 	radio: (function(target, data){
 		var options = target.children;
 		for(var i=0;i<options.length;) target.removeChild(options[i]);
 		for(var i=0;i<data.options.length;i++){
 			var option = document.createElement('div');
-			option.className="ui radio checkbox";
 			var input = document.createElement('input');
 			var label = document.createElement('label');
 			input.type="radio";
 			input.value = data.options[i];
-			input.className = "checkbox";
 			input.name = "radio";
 			label.innerText = data.options[i];
 			option.appendChild(input);
 			option.appendChild(label);
 			target.appendChild(option);
+			if(data.checked!=undefined && data.checked == input.value){
+				input.checked = true;
+			}
 		}
-	})
+	}),
+
+	select: (function(target, data){
+		var options = target.getElementsByTagName('option');
+		for(var i=0;i<options.length;) target.removeChild(options[i]);
+		for(var i=0;i<data.options.length;i++){
+			var option = document.createElement('option');
+			option.value = data.options[i];
+			option.innerText = data.options[i];
+			target.appendChild(option);
+		}
+	}),
+
 };
 
 function handleMessage(msg){

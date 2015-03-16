@@ -82,7 +82,7 @@ module ShenmeGUI
       data = {text: text, value: value}
       @socket.send("prompt:0->#{data.to_json}")
     end
-    
+
   end
 
   @elements = []
@@ -96,8 +96,9 @@ module ShenmeGUI
           begin
             command = $stdin.gets.chomp
             result = eval command, bind
-            $stdout << "=> #{result}\n"
+            puts "=> #{result}"
           rescue
+            puts "#{$!}"
           end
         end
       end
