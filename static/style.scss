@@ -93,6 +93,8 @@ input[type="text"], textarea, select, .image, .progress{
 
 textarea {
   resize: none;
+  width: 250px;
+  height: 60px;
 }
 
 select {
@@ -147,4 +149,5 @@ input[type="radio"]:checked + label:before {
 
 .button, .checkbox, .flow, .image, .progress, .radio, .select, .stack, .textarea, .textline {
   margin-bottom: 0.5em;
+  margin-right: 0.2em;
 }
