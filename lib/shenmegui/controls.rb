@@ -111,7 +111,7 @@ module ShenmeGUI
     end
 
     class Button < Base
-      property :text, :state
+      property :text
       shortcut :text
 
     end
@@ -128,7 +128,6 @@ module ShenmeGUI
 
       def <<(t)
         text << "\n#{t}"
-        sync
       end
     end
 

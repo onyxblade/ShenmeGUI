@@ -16,7 +16,10 @@ body {
   border-bottom-color: #808080;
   box-shadow: 1px 1px 0 0 #000;
   width: 400px;
-  cursor: default; }
+  cursor: default;
+  float: left;
+  margin-right: 30px;
+  margin-bottom: 20px; }
   .window .content {
     padding: 7px 10px; }
   .window .title {
@@ -34,13 +37,21 @@ body {
       float: left;
       margin-right: 2px; }
 
+.button, .checkbox, .image, .progress, .radio, .select, .textarea, .textline, .label {
+  display: inline-block;
+  margin-bottom: 0.5em;
+  margin-right: 0.2em;
+  max-width: 100%; }
+
 .stack > * {
-  display: block !important; }
+  display: block !important;
+  max-width: 100%; }
 
 .flow > * {
-  display: inline !important; }
+  display: inline-block !important;
+  max-width: 100%; }
 
-.image, .progress {
+.progress {
   width: 100%; }
 
 button {
@@ -123,10 +134,6 @@ input[type="radio"]:checked + label:before {
 
 .option {
   margin-right: 1em; }
-
-.button, .checkbox, .image, .progress, .radio, .select, .textarea, .textline, .label {
-  margin-bottom: 0.5em;
-  margin-right: 0.2em; }
 
 .label {
   font-weight: bolder; }

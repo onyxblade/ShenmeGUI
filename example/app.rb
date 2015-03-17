@@ -2,7 +2,7 @@ require '../lib/shenmegui'
 
 ShenmeGUI.app do
   form title: 'test' do
-    button('open file').onclick { @text.text = ShenmeGUI::FileDialog.get_open_file_name; @i.src="file:///#{@text.text}" }
+    button('open file').onclick { @text.text = get_open_file_name; @i.src=@text.text}
     @sel = select %w{1 2 3}
 
     radio %w{option1 option2 option3}, arrange: 'horizontal'
@@ -14,7 +14,7 @@ ShenmeGUI.app do
     @b = button 'button1'
     @b.onclick do
       @b.text = "clicked"
-      @text << " ok"
+      @text << "ok"
       @t.text[0] = '1'
       @sel.options.pop
     end
@@ -48,8 +48,9 @@ ShenmeGUI.app do
     checkbox ['check me', 'and me'], checked:['check me']
 
   end
+
 end
 
-ShenmeGUI.debug!
+ShenmeGUI.enable_debug
 
 ShenmeGUI.start!
