@@ -40,21 +40,21 @@ module ShenmeGUI
   end
 
   class << self
-    attr_accessor :elements, :socket
-    attr_reader :this
+    attr_accessor :socket
+    attr_reader :this, :elements
 
     def handle(msg)
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
-      target = elements[id]
+      target = @elements[id]
       data = JSON.parse(match_data[3]) if match_data[3]
       case command
         when :sync
           target.update(data)
         else
           event_lambda = target.events[command]
-          @this = elements[id]
+          @this = @elements[id]
           ShenmeGUI.instance_exec(&event_lambda) if event_lambda
           @this = nil
 
@@ -64,7 +64,7 @@ module ShenmeGUI
 
     def app(params={}, &block)
       body(params, &block)
-      File.open('index.html', 'w'){ |f| f.write elements[0].render }
+      File.open('index.html', 'w'){ |f| f.write @elements[0].render }
       nil
     end
 
@@ -107,7 +107,7 @@ module ShenmeGUI
         EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
           ws.onopen do
             puts "WebSocket connection open"
-            elements.each { |e| e.add_events; e.sync }
+            @elements.each { |e| e.add_events; e.sync }
           end
 
           ws.onclose { puts "Connection closed" }
