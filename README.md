@@ -5,7 +5,9 @@
 
 ShenmeGUI是一套GUI工具，为Ruby程序构建图形界面。
 
-程序将一些简单的界面描述DSL代码转为HTML，并绑定上相应的事件，使HTML的前端和Ruby后端可以同步数据。数据的双向绑定通过Websocket完成。
+程序将一些简单的界面描述DSL代码转为HTML，并绑定上相应的事件，使HTML的前端和Ruby后端可以同步数据。前端的输入会即时同步到后端，而Ruby对控件属性的操作也能即时反映到前端。
+
+数据的双向绑定通过Websocket完成。
 
 ###安装
 
@@ -24,7 +26,7 @@ ShenmeGUI.app do
     button('open an image').onclick do
       path = ShenmeGUI::FileDialog.get_open_file_name
       @t.text = path
-      @i.src = path
+      @i.src = "file:///#{path}"
     end
     stack do
       label 'image path:'
