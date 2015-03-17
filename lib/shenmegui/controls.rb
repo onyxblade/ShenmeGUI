@@ -39,7 +39,7 @@ module ShenmeGUI
 
       end
 
-      available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change}.collect(&:to_sym)
+      available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change onselect}.collect(&:to_sym)
       available_events.each do |x|
         define_method("on#{x}") do |&block|
           return events[x] if block.nil?
@@ -117,13 +117,13 @@ module ShenmeGUI
     end
 
     class Textline < Base
-      property :text
+      property :text, :selection_start, :selection_end
       shortcut :text
 
     end
 
     class Textarea < Base
-      property :text
+      property :text, :selection_start, :selection_end
       shortcut :text
 
       def <<(t)

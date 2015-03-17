@@ -22,23 +22,27 @@ function sync(obj){
 
 var changeListeners = {
 	textline: {
-		event: 'input',
+		event: ['input','select'],
 		function: (function(){
 			this.properties.text = this.value;
+			this.properties.selection_start = this.selectionStart;
+			this.properties.selection_end = this.selectionEnd;
 			sync(this);
 		})
 	},
 
 	textarea: {
-		event: 'input',
+		event: ['input','select'],
 		function: (function(){
 			this.properties.text = this.value;
+			this.properties.selection_start = this.selectionStart;
+			this.properties.selection_end = this.selectionEnd;
 			sync(this);
 		})
 	},
 
 	checkbox: {
-		event: 'change',
+		event: ['change'],
 		function: (function(){
 			var options = this.getElementsByTagName('input');
 			var checked = [];
@@ -51,7 +55,7 @@ var changeListeners = {
 	},
 
 	select: {
-		event: 'change',
+		event: ['change'],
 		function: (function(){
 			this.properties.checked = this.value;
 			sync(this);
@@ -59,7 +63,7 @@ var changeListeners = {
 	},
 
 	radio: {
-		event: 'change',
+		event: ['change'],
 		function: (function(){
 			this.properties.checked = this.elements['radio'].value;
 			sync(this);
@@ -70,7 +74,11 @@ var changeListeners = {
 function addChangeListener(obj){
 	var type = obj.getAttribute('data-type');
 	changeListener = changeListeners[type];
-	if(changeListener)	obj.addEventListener(changeListener.event, changeListener.function);
+	if(changeListener){
+		for(var i in changeListener.event){
+			obj.addEventListener(changeListener.event[i], changeListener.function);
+		}
+	}
 }
 
 function addEvents(obj, events){
