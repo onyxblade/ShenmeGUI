@@ -144,7 +144,7 @@ module ShenmeGUI
     end
 
     class Checkbox < Base
-      property :options, :checked
+      property :options, :checked, :arrange
       shortcut :options
     end
 
@@ -159,7 +159,7 @@ module ShenmeGUI
     end
 
     class Radio < Base
-      property :options, :checked
+      property :options, :checked, :arrange
       shortcut :options
     end
 

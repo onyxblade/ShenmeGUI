@@ -42,11 +42,11 @@ body {
   }
 }
 
-.stack * {
+.stack>* {
   display: block !important;
 }
 
-.flow * {
+.flow>* {
   display: inline !important;
 }
 
@@ -144,7 +144,7 @@ input[type="radio"]:checked + label:before {
   height: 18px;
 }
 
-.radio>div, .checkbox>div {
+.option {
   margin-right: 1em;
 }
 

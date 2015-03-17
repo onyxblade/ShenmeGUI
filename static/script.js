@@ -102,7 +102,7 @@ var syncHandlers = {
 	}),
 
 	form: (function(target, data){
-		target.getElementsByClassName('title').getElementsByTagName('span')[0].innerText = data.title;
+		target.getElementsByClassName('title')[0].getElementsByTagName('span')[0].innerText = data.title;
 	}),
 
 	button: (function(target, data){
@@ -131,10 +131,13 @@ var syncHandlers = {
 	}),
 
 	checkbox: (function(target, data){
+		if(data.arrange=='horizontal') target.className = 'flow';
+		if(data.arrange=='vertical') target.className = 'stack';
 		var options = target.children;
 		for(var i=0;i<options.length;) target.removeChild(options[i]);
 		for(var i=0;i<data.options.length;i++){
 			var option = document.createElement('div');
+			option.className = "option";
 			var input = document.createElement('input');
 			var label = document.createElement('label');
 			input.type = 'checkbox';
@@ -153,10 +156,13 @@ var syncHandlers = {
 	}),
 
 	radio: (function(target, data){
+		if(data.arrange=='horizontal') target.className = 'flow';
+		if(data.arrange=='vertical') target.className = 'stack';
 		var options = target.children;
 		for(var i=0;i<options.length;) target.removeChild(options[i]);
 		for(var i=0;i<data.options.length;i++){
 			var option = document.createElement('div');
+			option.className = "option";
 			var input = document.createElement('input');
 			var label = document.createElement('label');
 			input.type="radio";

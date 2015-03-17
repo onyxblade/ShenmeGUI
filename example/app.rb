@@ -4,9 +4,9 @@ ShenmeGUI.app do
   form title: 'test' do
     button('open file').onclick { @text.text = ShenmeGUI::FileDialog.get_open_file_name; @i.src="file:///#{@text.text}" }
     @sel = select %w{1 2 3}
-    flow do
-      radio %w{option1 option2 option3}
-    end
+
+    radio %w{option1 option2 option3}, arrange: 'horizontal'
+
     radio %w{option7 option8 option9}, checked: 'option9'
 
     button('alert').onclick { alert 'test message'}
