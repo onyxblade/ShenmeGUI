@@ -168,6 +168,11 @@ module ShenmeGUI
       shortcut :options
     end
 
+    class Label < Base
+      property :text
+      shortcut :text
+    end
+
     controls = constants.reject{|x| x==:Base}
     controls.each do |x|
       ShenmeGUI.singleton_class.instance_eval do

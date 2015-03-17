@@ -189,6 +189,10 @@ var syncHandlers = {
 		}
 	}),
 
+	label: (function(target, data){
+		target.innerText = data.text;
+	})
+
 };
 
 function handleMessage(msg){

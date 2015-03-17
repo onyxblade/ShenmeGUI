@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.description = "a simple HTML GUI for Ruby"
   s.authors     = ["CicholGricenchos"]
   s.email       = 'cichol@live.cn'
-  s.files       = %w{lib lib/shenmegui static templates}.collect{|p| `ls #{p}`.split("\n").collect{|x| "#{p}/#{x}"}}.flatten
+  s.files       = %w{lib lib/shenmegui templates}.collect{|p| `ls #{p}`.split("\n").collect{|x| "#{p}/#{x}"}}.flatten.concat(['static/style.css', 'static/script.js'])
   s.homepage    = 'https://github.com/CicholGricenchos/shenmegui'
   s.license = 'MIT'
   s.required_ruby_version = '>= 2.0'

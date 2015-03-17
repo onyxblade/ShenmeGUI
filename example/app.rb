@@ -19,7 +19,8 @@ ShenmeGUI.app do
       @sel.options.pop
     end
 
-    stack do 
+    stack do
+      label 'a textarea:'
       @text = textarea('default', width: '100%')
       @text.onblur do
         this.text = "blur"

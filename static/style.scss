@@ -148,7 +148,11 @@ input[type="radio"]:checked + label:before {
   margin-right: 1em;
 }
 
-.button, .checkbox, .image, .progress, .radio, .select, .textarea, .textline {
+.button, .checkbox, .image, .progress, .radio, .select, .textarea, .textline, .label {
   margin-bottom: 0.5em;
   margin-right: 0.2em;
+}
+
+.label {
+	font-weight: bolder;
 }
