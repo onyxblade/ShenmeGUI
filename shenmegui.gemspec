@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'shenmegui'
-  s.version     = '0.2'
+  s.version     = '0.2.1'
   s.date        = '2015-03-11'
   s.summary     = "什么鬼!"
   s.description = "a simple HTML GUI for Ruby"

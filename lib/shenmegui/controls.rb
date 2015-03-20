@@ -11,6 +11,8 @@ module ShenmeGUI
             HookedString.new(obj, self)
           when Array
             HookedArray.new(obj, self)
+          when Hash
+            HookedHash.new(obj, self)
           else
             obj
         end
@@ -32,7 +34,6 @@ module ShenmeGUI
 
       def self.shortcut(prop)
         define_method(:initialize) do |x=nil, params={}|
-          x = hook x
           params.merge!({prop => x})
           super(params)
         end
@@ -72,7 +73,8 @@ module ShenmeGUI
       end
 
       def initialize(params={})
-        @properties = Hash[params.keys.collect(&:to_sym).zip(params.values.collect{|x| hook(x)})]
+        @properties = {}
+        update(params)
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
         @children = []

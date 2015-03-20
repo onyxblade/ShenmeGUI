@@ -37,4 +37,23 @@ module ShenmeGUI
     end
 
   end
+
+  class HookedHash < Hash
+    @unhook_methods = %i{[]= clear delete delete_if keep_if merge! update rehash reject! replace select! shift}
+    @unhook_methods = Hash[@unhook_methods.collect{|x| [x, Hash.instance_method(x)]}]
+
+    def initialize(hsh, owner)
+      @owner = owner
+      super(hsh)
+    end
+
+    @unhook_methods.each do |k, v|
+      define_method(k) do |*arr, &block|
+        result = v.bind(self).call(*arr, &block)
+        @owner.sync
+        result
+      end
+    end
+
+  end
 end

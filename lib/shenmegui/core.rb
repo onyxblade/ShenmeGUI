@@ -52,7 +52,7 @@ module ShenmeGUI
           while true
             begin
               command = $stdin.gets.chomp
-              result = eval command, bind
+              result = bind.eval command
               puts "=> #{result}"
             rescue
               puts "#{$!}"
@@ -69,7 +69,10 @@ module ShenmeGUI
           EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
             ws.onopen do
               puts "WebSocket connection open"
-              @elements.each { |e| e.add_events; e.sync }
+              @elements.each do |e|
+                e.add_events
+                e.sync
+              end
             end
 
             ws.onclose { puts "Connection closed" }
@@ -84,8 +87,8 @@ module ShenmeGUI
         end
       end
 
-      index_path = "#{Dir.pwd}/index.html"
-      `start file:///#{index_path}`
+      #index_path = "#{Dir.pwd}/index.html"
+      #`start file:///#{index_path}`
 
       ws_thread.join
     rescue Interrupt
