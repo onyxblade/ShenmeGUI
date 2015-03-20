@@ -83,7 +83,7 @@ module ShenmeGUI
       def render(material = {})
         gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
         template_path = gem_path + "/templates"
-        type = self.class.name.match(/(?:.*::)(.+)/)[1]
+        type = self.class.name.match(/(?:.*::)(.+)/)[1].downcase
         template = ::ERB.new File.read("#{template_path}/#{type}.erb")
         content = children.collect{|x| x.render}.join("\n")
         template.result(binding)
