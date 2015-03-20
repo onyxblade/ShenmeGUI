@@ -87,9 +87,12 @@ module ShenmeGUI
         end
       end
 
-      index_path = "#{Dir.pwd}/index.html"
-      `start file:///#{index_path}`
-
+      begin
+        index_path = "#{Dir.pwd}/index.html"
+        `start file:///#{index_path}`
+      rescue
+      end
+      
       ws_thread.join
     rescue Interrupt
       puts 'bye~'
