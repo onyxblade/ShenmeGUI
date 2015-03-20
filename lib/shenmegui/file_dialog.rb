@@ -84,7 +84,17 @@ module ShenmeGUI
       path.force_encoding('GBK').encode('UTF-8')
     end
 
+  #avoid error under linux
+  rescue
+    def self.get_open_file_name(params={})
+      ""
+    end
+
+    def self.get_save_file_name(params={})
+      ""
+    end
   end
+
 end
 
 #ShenmeGUI::FileDialog.get_open_file_name(initial_path: 'C:\\')
