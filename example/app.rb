@@ -22,11 +22,8 @@ ShenmeGUI.app do
     stack do
       label 'a textarea:'
       @text = textarea('default', width: '100%')
-      @text.onblur do
-        this.text = "blur"
-      end
-      @text.onfocus do 
-        this.text = "focus"
+      @text.onselect do
+        p this.text[this.selection[0]...this.selection[1]]
       end
     end
     
@@ -51,6 +48,6 @@ ShenmeGUI.app do
 
 end
 
-ShenmeGUI.enable_debug
+ShenmeGUI.enable_debugging
 
 ShenmeGUI.start!

@@ -5,7 +5,7 @@ module ShenmeGUI
     class Base
       attr_accessor :id, :properties, :events, :children, :parent
 
-      def hook(obj)
+      def add_hook(obj)
         case obj
           when String
             HookedString.new(obj, self)
@@ -25,8 +25,7 @@ module ShenmeGUI
           end
 
           define_method("#{x}=") do |v|
-            v = hook v
-            @properties[x] = v
+            update_properties({x => v})
             sync
           end
         end
@@ -40,7 +39,7 @@ module ShenmeGUI
 
       end
 
-      available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change onselect}.collect(&:to_sym)
+      available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change select}.collect(&:to_sym)
       available_events.each do |x|
         define_method("on#{x}") do |&block|
           return events[x] if block.nil?
@@ -61,12 +60,12 @@ module ShenmeGUI
         ShenmeGUI.socket.send(msg)
       end
 
-      def update(data)
-        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| hook(x)})]
+      def update_properties(data)
+        data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| add_hook(x)})]
         @properties.update(data)
       end
 
-      def add_events
+      def sync_events
         data = @events.keys
         msg = "add_event:#{@id}->#{data.to_json}"
         ShenmeGUI.socket.send(msg)
@@ -74,7 +73,7 @@ module ShenmeGUI
 
       def initialize(params={})
         @properties = {}
-        update(params)
+        update_properties(params)
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
         @children = []
@@ -119,17 +118,26 @@ module ShenmeGUI
     end
 
     class Textline < Base
-      property :text, :selection_start, :selection_end
+      property :text, :selection
       shortcut :text
 
+      def text=(v)
+        update_properties({text: v, selection: [v.size]*2 })
+        sync
+      end
     end
 
     class Textarea < Base
-      property :text, :selection_start, :selection_end
+      property :text, :selection
       shortcut :text
 
       def <<(t)
         text << "\n#{t}"
+      end
+
+      def text=(v)
+        update_properties({text: v, selection: [v.size]*2 })
+        sync
       end
     end
 
@@ -146,7 +154,7 @@ module ShenmeGUI
 
     class Checkbox < Base
       property :options, :checked, :arrange
-      shortcut :options
+      shortcut :options 
     end
 
     class Progress < Base

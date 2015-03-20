@@ -37,8 +37,9 @@ module ShenmeGUI
       filter = params[:filter] ? "#{params[:filter]}\0#{params[:filter]}\0\0" : 0
       title = params[:title] || 0
       flags = 0x00880000
-      flags += 0x00000200 if params[:multiselect]
-      flags += 0x10000000 if params[:showhidden]
+      flags += 0x00000200 if params[:multi_select]
+      flags += 0x10000000 if params[:show_hidden]
+      initial_path = params[:initial_path] ? params[:initial_path] : 0
 
       path = "\0" * 1024
       ofn = Struct_OPENFILENAME.malloc
@@ -52,7 +53,7 @@ module ShenmeGUI
       ofn.nMaxFile = path.size
       ofn.lpstrFileTitle = 0
       ofn.nMaxFileTitle = 0
-      ofn.lpstrInitialDir = 0
+      ofn.lpstrInitialDir = initial_path
       ofn.lpstrTitle = title
       ofn.nFileOffset = 0
       ofn.nFileExtension = 0
@@ -85,3 +86,5 @@ module ShenmeGUI
 
   end
 end
+
+#ShenmeGUI::FileDialog.get_open_file_name(initial_path: 'C:\\')

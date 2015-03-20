@@ -38,7 +38,6 @@ body {
       margin-right: 2px; }
 
 .button, .checkbox, .image, .progress, .radio, .select, .textarea, .textline, .label {
-  display: inline-block;
   margin-bottom: 0.5em;
   margin-right: 0.2em;
   max-width: 100%; }

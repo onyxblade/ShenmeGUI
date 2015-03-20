@@ -3,15 +3,11 @@
 
 ###概述
 
-ShenmeGUI是一套GUI工具，为Ruby程序构建图形界面。
-
-程序将一些简单的界面描述DSL代码转为HTML，并绑定上相应的事件，使HTML的前端和Ruby后端可以同步数据。前端的输入会即时同步到后端，而Ruby对控件属性的操作也能即时反映到前端。
-
-数据的双向绑定通过Websocket完成。
+ShenmeGUI是一套受[Shoes](http://shoesrb.com/)启发而诞生的GUI工具，拥有相似的DSL语法，使用HTML构建界面，并实现了前后端数据的双向绑定，可以便捷地实现一些轻量的GUI应用。
 
 ###安装
 
-运行 `gem install shenmegui` 或直接clone本代码库。
+执行 `gem install shenmegui` 。
 
 ###示例代码
 
@@ -24,9 +20,9 @@ ShenmeGUI.app do
       alert 'Hello World!'
     end
     button('open an image').onclick do
-      path = ShenmeGUI::FileDialog.get_open_file_name
+      path = get_open_file_name
       @t.text = path
-      @i.src = "file:///#{path}"
+      @i.src = path
     end
     stack do
       label 'image path:'
@@ -51,7 +47,15 @@ ShenmeGUI.start!
 
 button定义按钮，并通过onclick绑定上了点击事件。第一个按钮弹出一个对话框，第二个按钮弹出一个打开文件的对话框，将文件路径写到下方定义的textarea里，并改变image的src以显示这个图片。
 
-实例变量如@t在整个ShenmeGUI.app内是通用的，而局部变量只能在do...end块内通用，所以要在事件间共享变量的话，一定要使用实例变量，或者保证在同一个do...end内。
+下方的两个按钮演示了进度条的增减。
+
+###系统需求
+
+Ruby版本大于等于2.0.0。
+
+因为前后端通讯使用了websocket，所以需要使用支持websocket的浏览器。
+
+目前打开文件对话框只实现了windows版本，在Linux等使用会出错，以后会尝试在其他系统实现，除此之外对系统没有要求。
 
 ###wiki
 

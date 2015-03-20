@@ -15,7 +15,7 @@ module ShenmeGUI
       data = JSON.parse(match_data[3]) if match_data[3]
       case command
         when :sync
-          target.update(data)
+          target.update_properties(data)
         else
           event_lambda = target.events[command]
           @this = @elements[id]
@@ -45,7 +45,7 @@ module ShenmeGUI
       FileDialog.get_save_file_name(params)
     end
     
-    def enable_debug
+    def enable_debugging
       Thread.new do
         ShenmeGUI.instance_eval do
           bind = binding
@@ -70,7 +70,7 @@ module ShenmeGUI
             ws.onopen do
               puts "WebSocket connection open"
               @elements.each do |e|
-                e.add_events
+                e.sync_events
                 e.sync
               end
             end
@@ -87,8 +87,8 @@ module ShenmeGUI
         end
       end
 
-      #index_path = "#{Dir.pwd}/index.html"
-      #`start file:///#{index_path}`
+      index_path = "#{Dir.pwd}/index.html"
+      `start file:///#{index_path}`
 
       ws_thread.join
     rescue Interrupt

@@ -25,8 +25,7 @@ var changeListeners = {
 		event: ['input','select'],
 		function: (function(){
 			this.properties.text = this.value;
-			this.properties.selection_start = this.selectionStart;
-			this.properties.selection_end = this.selectionEnd;
+			this.properties.selection = [this.selectionStart, this.selectionEnd];
 			sync(this);
 		})
 	},
@@ -35,8 +34,7 @@ var changeListeners = {
 		event: ['input','select'],
 		function: (function(){
 			this.properties.text = this.value;
-			this.properties.selection_start = this.selectionStart;
-			this.properties.selection_end = this.selectionEnd;
+			this.properties.selection = [this.selectionStart, this.selectionEnd];
 			sync(this);
 		})
 	},
@@ -119,10 +117,18 @@ var syncHandlers = {
 
 	textline: (function(target, data){
 		target.value = data.text;
+		if(data.selection){
+			target.selectionStart = data.selection[0];
+			target.selectionEnd = data.selection[1];
+		}
 	}),
 
 	textarea: (function(target, data){
 		target.value = data.text;
+		if(data.selection){
+			target.selectionStart = data.selection[0];
+			target.selectionEnd = data.selection[1];
+		}
 	}),
 
 	image: (function(target, data){
