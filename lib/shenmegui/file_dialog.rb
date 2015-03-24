@@ -70,7 +70,7 @@ module ShenmeGUI
     def self.get_open_file_name(params={})
       ofn, path = construct_OPENFILENAME(params)
       GetOpenFileName(ofn)
-      ofn = nil
+      Fiddle.free(ofn.to_i)
       path = path.split("\0")
       path = path[1..-1].collect{|x| "#{path[0]}\\#{x}"} if path.size > 1
       path.collect{|x| x.force_encoding('GBK').encode('UTF-8')}
@@ -80,7 +80,7 @@ module ShenmeGUI
     def self.get_save_file_name(params={})
       ofn, path = construct_OPENFILENAME(params)
       GetSaveFileName(ofn)
-      ofn = nil
+      Fiddle.free(ofn.to_i)
       path.force_encoding('GBK').encode('UTF-8')
     end
 
