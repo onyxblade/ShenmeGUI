@@ -1,3 +1,5 @@
+require 'socket'
+
 module ShenmeGUI
 
   @elements = []
@@ -91,7 +93,8 @@ module ShenmeGUI
         end
       end
       begin
-        index_path = "#{Dir.pwd}/index.html"
+        app_dir = File.expand_path($PROGRAM_NAME).match(/(.+)\/.+/)[1]
+        index_path = "#{app_dir}/index.html"
         `start file:///#{index_path}`
       rescue
       end
