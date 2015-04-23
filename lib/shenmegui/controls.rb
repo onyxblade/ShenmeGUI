@@ -81,7 +81,7 @@ module ShenmeGUI
       end
 
       def render(material = {})
-        gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
+        gem_path = __FILE__.match(/(.*)\/lib/)[1]
         template_path = gem_path + "/templates"
         type = self.class.name.match(/(?:.*::)(.+)/)[1].downcase
         template = ::ERB.new File.read("#{template_path}/#{type}.erb")
@@ -98,7 +98,7 @@ module ShenmeGUI
 
     class Body < Base
       def render(material = {})
-        gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
+        gem_path = __FILE__.match(/(.*)\/lib/)[1]
         static_path = gem_path + "/static"
         style = %w{style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
         script = File.read("#{static_path}/script.js")
