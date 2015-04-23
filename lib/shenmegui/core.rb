@@ -28,7 +28,11 @@ module ShenmeGUI
 
     def app(params={}, &block)
       body(params, &block)
-      File.open('index.html', 'w'){ |f| f.write @elements[0].render }
+      #找一个空闲的端口，不太好看
+      temp_server = TCPServer.open('localhost', 0)
+      @port = temp_server.addr[1]
+      temp_server.close
+      File.open('index.html', 'w'){ |f| f.write @elements[0].render(port: @port) }
       nil
     end
 
@@ -44,7 +48,7 @@ module ShenmeGUI
     def get_save_file_name(params={})
       FileDialog.get_save_file_name(params)
     end
-    
+
     def enable_debugging
       Thread.new do
         ShenmeGUI.instance_eval do
@@ -66,7 +70,7 @@ module ShenmeGUI
     def start!
       ws_thread = Thread.new do
         EM.run do
-          EM::WebSocket.run(:host => "0.0.0.0", :port => 80) do |ws|
+          EM::WebSocket.run(:host => "0.0.0.0", :port => @port) do |ws|
             ws.onopen do
               puts "WebSocket connection open"
               @elements.each do |e|
@@ -81,18 +85,17 @@ module ShenmeGUI
               puts "Recieved message: #{msg}"
               handle msg
             end
-            
+
             @socket = ws
           end
         end
       end
-
       begin
         index_path = "#{Dir.pwd}/index.html"
         `start file:///#{index_path}`
       rescue
       end
-      
+
       ws_thread.join
     rescue Interrupt
       puts 'bye~'

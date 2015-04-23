@@ -97,12 +97,12 @@ module ShenmeGUI
     end
 
     class Body < Base
-      def render
+      def render(material = {})
         gem_path = $LOADED_FEATURES.grep(/.*\/lib\/shenmegui/)[0].match(/(.*)\/lib/)[1]
         static_path = gem_path + "/static"
         style = %w{style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
         script = File.read("#{static_path}/script.js")
-        super({style: style, script: script})
+        super({style: style, script: script}.merge(material))
       end
 
     end
@@ -154,7 +154,7 @@ module ShenmeGUI
 
     class Checkbox < Base
       property :options, :checked, :arrange
-      shortcut :options 
+      shortcut :options
     end
 
     class Progress < Base

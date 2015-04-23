@@ -1,6 +1,6 @@
-var websocket = 
+var websocket =
 (function configureWebSocket(){
-	var wsUrl = "ws://localhost/";
+	var wsUrl = "ws://localhost:" + wsPort + "/";
 
 	var websocket = new WebSocket(wsUrl);
 	websocket.onopen = function(evt){
@@ -166,7 +166,7 @@ var syncHandlers = {
 				}
 			}
 		}
-		
+
 	}),
 
 	radio: (function(target, data){
