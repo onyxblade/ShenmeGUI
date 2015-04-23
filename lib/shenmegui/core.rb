@@ -34,7 +34,8 @@ module ShenmeGUI
       temp_server = TCPServer.open('localhost', 0)
       @port = temp_server.addr[1]
       temp_server.close
-      File.open('index.html', 'w'){ |f| f.write @elements[0].render(port: @port) }
+      app_dir = File.expand_path($PROGRAM_NAME).match(/(.+)\/.+/)[1]
+      File.open("#{app_dir}/index.html", 'w'){ |f| f.write @elements[0].render(port: @port) }
       nil
     end
 
