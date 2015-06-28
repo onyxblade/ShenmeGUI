@@ -88,10 +88,12 @@ module ShenmeGUI
   rescue
     def self.get_open_file_name(params={})
       ShenmeGUI.alert 'opening local file isn\'t implimented in this OS yet'
+      ''
     end
 
     def self.get_save_file_name(params={})
       ShenmeGUI.alert 'opening local file isn\'t implimented in this OS yet'
+      ''
     end
   end
 
