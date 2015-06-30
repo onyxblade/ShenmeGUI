@@ -205,6 +205,23 @@ var syncHandlers = {
 
 	label: (function(target, data){
 		target.innerText = data.text;
+	}),
+
+	table: (function(target, data){
+		for(var i=0;i<target.children.length;) target.removeChild(target.children[i]);
+		var tableData = data.data;
+		var columnSize = tableData[0].length;
+		var table = document.createElement('table');
+		for(var i=0; i<tableData.length; i++){
+			var tr = document.createElement('tr');
+			for(var j=0; j<columnSize; j++){
+				var td = document.createElement('td');
+				td.innerText = tableData[i][j];
+				tr.appendChild(td);
+			}
+			table.appendChild(tr);
+		}
+		target.appendChild(table);
 	})
 
 };

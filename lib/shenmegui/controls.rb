@@ -182,6 +182,15 @@ module ShenmeGUI
       shortcut :text
     end
 
+    class Table < Base
+      property :data
+      shortcut :data
+
+      def << row
+        data << row
+      end
+    end
+
     controls = constants.reject{|x| x==:Base}
     controls.each do |x|
       ShenmeGUI.singleton_class.instance_eval do

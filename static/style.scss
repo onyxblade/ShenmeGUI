@@ -163,3 +163,32 @@ input[type="radio"]:checked + label:before {
 .label {
 	font-weight: bolder;
 }
+
+.table {
+  background-color: #808080;
+  box-sizing: border-box;
+  font-size: 11px;
+  font-family: Tahoma, Verdana;
+  color: #070707;
+  box-shadow: -1px -1px 0 0 #808080, 1px 1px 0 0 #fff;
+  border: 1px solid;
+  border-top-color: #000;
+  border-left-color: #000;
+  border-right-color: #dfdfdf;
+  border-bottom-color: #dfdfdf;
+  outline: none;
+}
+
+table {
+  border: 1px #d4d0c8 solid;
+  border-left: 1px #808080 solid;
+  border-collapse: collapse;
+  font-size: 12px;
+  background-color: #fff;
+}
+
+td {
+  vertical-align: baseline;
+  padding: 3px 15px 3px 3px;
+  border: 1px solid #d4d0c8;
+}

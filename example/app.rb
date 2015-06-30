@@ -44,6 +44,8 @@ ShenmeGUI.app do
 
     checkbox ['check me', 'and me'], checked:['check me']
 
+    @table = table [['column 1',' column 2'],['row','row']]
+    button('test add new row').onclick { @table << ['new row','new row']}
   end
 
 end
