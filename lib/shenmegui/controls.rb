@@ -80,7 +80,7 @@ module ShenmeGUI
       end
 
       def initialize(params={})
-        @properties = self.class.default_properties || {}
+        @properties = self.class.default_properties ? self.class.default_properties.dup : {}
         update_properties(params)
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
