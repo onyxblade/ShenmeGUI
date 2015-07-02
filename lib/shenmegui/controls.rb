@@ -39,6 +39,14 @@ module ShenmeGUI
 
       end
 
+      def self.default(params)
+        @default_properties = params
+      end
+
+      def self.default_properties
+        @default_properties
+      end
+
       available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change select}.collect(&:to_sym)
       available_events.each do |x|
         define_method("on#{x}") do |&block|
@@ -72,7 +80,7 @@ module ShenmeGUI
       end
 
       def initialize(params={})
-        @properties = {}
+        @properties = self.class.default_properties || {}
         update_properties(params)
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
@@ -109,6 +117,7 @@ module ShenmeGUI
 
     class Form < Base
       property :title
+      default :width=>'400px'
     end
 
     class Button < Base
@@ -130,6 +139,7 @@ module ShenmeGUI
     class Textarea < Base
       property :text, :selection
       shortcut :text
+      default :width=>'250px', :height=>'60px'
 
       def <<(t)
         text << "\n#{t}"
@@ -160,6 +170,7 @@ module ShenmeGUI
     class Progress < Base
       property :percent
       shortcut :percent
+      default :width=>'100%'
 
       def validate(params)
         params[:percent] = 0 if params[:percent] < 0
@@ -185,6 +196,7 @@ module ShenmeGUI
     class Table < Base
       property :data
       shortcut :data
+      default :width=>'100%', :height=>'150px'
 
       def << row
         data << row
