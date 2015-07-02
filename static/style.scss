@@ -1,29 +1,42 @@
+//$background-color: #d4d0c8;
+$background-color: #bfbfbf;
+
 //凹边框
 @mixin concave {
-	box-shadow: -1px -1px 0 0 #808080, 1px 1px 0 0 #fff;
 	border: 1px solid;
-	border-top-color: #000;
-	border-left-color: #000;
-	border-right-color: #dfdfdf;
-	border-bottom-color: #dfdfdf;
+	border-top-color: #404040;
+	border-left-color: #404040;
+	border-right-color: $background-color;
+	border-bottom-color: $background-color;
+	box-shadow: -1px -1px 0 0 #808080, 1px 1px 0 0 #fff;
 }
 
 //凸边框
-@mixin convex {
+@mixin convex-form {
 	border: 1px solid;
-	border-top-color: #dfdfdf;
-	border-left-color: #dfdfdf;
+	border-top-color: #ffffff;
+	border-left-color: #ffffff;
 	border-right-color: #808080;
 	border-bottom-color: #808080;
-	box-shadow: 1px 1px 0 0 #000;
+	box-shadow: -1px -1px 0 0 $background-color, 1px 1px 0 0 #404040;
 }
 
-@mixin convex-reverse {
+//按钮的凸边框，和窗体的有点点不同
+@mixin convex-button {
+	border: 1px solid;
+	border-top-color: #ffffff;
+	border-left-color: #ffffff;
+	border-right-color: #808080;
+	border-bottom-color: #808080;
+	box-shadow: 1px 1px 0 0 #404040;
+}
+
+@mixin convex-button-invert {
 	box-shadow: 1px 1px 0 0 #000 inset;
 	border-top-color: #808080;
 	border-left-color: #808080;
-	border-right-color: #dfdfdf;
-	border-bottom-color: #dfdfdf;
+	border-right-color: #ffffff;
+	border-bottom-color: #ffffff;
 }
 
 body {
@@ -31,15 +44,15 @@ body {
 	-webkit-font-smoothing: none;
 	-moz-osx-font-smoothing: none;
 	font-size: 12px;
-	font-family: Tahoma, Verdana, Simhei;
-	color: #070707;
+	font-family: Tahoma, Verdana, Simhei, sans-serif;
+	color: #000;
 	padding: 36px 50px 0;
 	box-sizing: border-box;
 }
 
 .form {
-	@include convex;
-	background: #bfbfbf;
+	@include convex-form;
+	background: $background-color;
 	cursor: default;
 	//多个窗体
 	float: left;
@@ -47,7 +60,7 @@ body {
 	margin-bottom: 20px;
 
 	.content {
-		padding: 7px 10px;
+		padding: 11px 9px;
 	}
 
 	.title {
@@ -87,18 +100,17 @@ body {
 
 //按钮
 button {
-	@include convex;
+	@include convex-button;
 	height: 25px;
 	font-size: inherit;
 	font-family: inherit;
 	color: inherit;
-	background: #bfbfbf;
-	text-align: center;
+	background: inherit;
 	outline: none;
 	padding: 4px;
 	cursor: default;
 	&:active {
-		@include convex-reverse;
+		@include convex-button-invert;
 	}
 }
 
