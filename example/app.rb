@@ -44,12 +44,18 @@ ShenmeGUI.app do
 
     checkbox ['check me', 'and me'], checked:['check me']
 
-    @table = table [['column 1',' column 2'],['row','row']]
+    @table = table [['column 1','column 2'],['row','row']]
+    @table.tap do |t|
+      t.column_names = ['c1', 'c2']
+      t.row_names = [1]
+    end
+
     button('test add new row').onclick { @table << ['new row','new row']}
   end
 
 end
 
 ShenmeGUI.enable_debugging
+ShenmeGUI.open_browser
 
 ShenmeGUI.start!

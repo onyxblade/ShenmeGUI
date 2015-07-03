@@ -131,7 +131,8 @@ input[type="radio"]:checked + label:before {
 
 .table {
   background-color: #808080;
-  overflow: auto; }
+  overflow: auto;
+  padding: 1px; }
 
 table {
   border-collapse: collapse;
@@ -140,6 +141,14 @@ table {
 td {
   vertical-align: baseline;
   padding: 3px 15px 3px 3px;
-  border: 1px solid #d4d0c8; }
+  border: 1px solid #d4d0c8;
+  overflow: auto; }
+
+th {
+  background-color: #bfbfbf;
+  padding: 3px 0 3px 9px;
+  border: 1px solid #fff;
+  border-right-color: #808080;
+  box-sizing: border-box; }
 
 /*# sourceMappingURL=style.css.map */

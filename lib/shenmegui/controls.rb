@@ -194,7 +194,7 @@ module ShenmeGUI
     end
 
     class Table < Base
-      property :data
+      property :data, :max_column_width, :column_names, :row_names, :row_names_enum
       shortcut :data
       default :width=>'100%', :height=>'150px'
 

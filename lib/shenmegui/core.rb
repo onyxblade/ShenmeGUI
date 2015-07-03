@@ -5,6 +5,16 @@ module ShenmeGUI
   @elements = []
   @temp_stack = []
 
+  class FakeSocket
+    attr_accessor :messages
+    def initialize
+      @messages = []
+    end
+    def send(msg)
+      @messages << msg
+    end
+  end
+
   class << self
     attr_accessor :socket
     attr_reader :this, :elements
@@ -29,6 +39,7 @@ module ShenmeGUI
     end
 
     def app(params={}, &block)
+      @socket = FakeSocket.new
       body(params, &block)
       #找一个空闲的端口，不太好看
       temp_server = TCPServer.open('localhost', 0)
@@ -70,6 +81,17 @@ module ShenmeGUI
       end
     end
 
+    def open_browser
+      app_dir = File.expand_path($PROGRAM_NAME).match(/(.+)\/.+/)[1]
+      index_path = "#{app_dir}/index.html"
+      if Gem.win_platform?
+        `start file:///#{index_path}`
+      elsif Gem.platforms[1].os == 'linux'
+        `xdg-open file:///#{index_path}`
+      end
+    rescue
+    end
+
     def start!
       ws_thread = Thread.new do
         EM.run do
@@ -80,6 +102,10 @@ module ShenmeGUI
                 e.sync_events
                 e.sync
               end
+              @socket.messages.each do |msg|
+                ws.send(msg)
+              end
+              @socket = ws
             end
 
             ws.onclose { puts "Connection closed" }
@@ -89,19 +115,9 @@ module ShenmeGUI
               handle msg
             end
 
-            @socket = ws
+            #@socket = ws
           end
         end
-      end
-      begin
-        app_dir = File.expand_path($PROGRAM_NAME).match(/(.+)\/.+/)[1]
-        index_path = "#{app_dir}/index.html"
-        if Gem.win_platform?
-          `start file:///#{index_path}`
-        elsif Gem.platforms[1].os == 'linux'
-          `xdg-open file:///#{index_path}`
-        end
-      rescue
       end
 
       ws_thread.join

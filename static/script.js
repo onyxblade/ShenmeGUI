@@ -210,11 +210,31 @@ var syncHandlers = {
 	table: (function(target, data){
 		for(var i=0;i<target.children.length;) target.removeChild(target.children[i]);
 		var tableData = data.data;
-		var columnSize = tableData[0].length;
 		var table = document.createElement('table');
+		var columnNames = data.column_names;
+		var rowNames = data.row_names;
+		if (columnNames) {
+			var tr = document.createElement('tr');
+			if (rowNames) {
+				var th = document.createElement('th');
+				th.innerText = '';
+				tr.appendChild(th);
+			}
+			for(var i=0; i<columnNames.length; i++ ){
+				var th = document.createElement('th');
+				th.innerText = columnNames[i] || '';
+				tr.appendChild(th);
+			}
+			table.appendChild(tr);
+		}
 		for(var i=0; i<tableData.length; i++){
 			var tr = document.createElement('tr');
-			for(var j=0; j<columnSize; j++){
+			if(rowNames){
+				var th = document.createElement('th');
+				th.innerText = rowNames[i] || '';
+				tr.appendChild(th);
+			}
+			for(var j=0; j<tableData[i].length; j++){
 				var td = document.createElement('td');
 				td.innerText = tableData[i][j];
 				tr.appendChild(td);
