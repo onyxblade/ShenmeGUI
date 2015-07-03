@@ -7,12 +7,17 @@ var websocket =
 		console.log("Connected.");
 	};
 	websocket.onmessage = function(evt){
-		console.log(evt.data);
+		console.log("received: " + evt.data);
 		handleMessage(evt.data);
 	};
 	websocket.onclose = function(evt){
 		console.log("Closed.");
 	};
+	websocket.originalSend = websocket.send;
+	websocket.send = function(msg){
+		console.log("sent: " + msg);
+		websocket.originalSend(msg);
+	}
 	return websocket;
 })();
 

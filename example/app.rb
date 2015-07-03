@@ -46,7 +46,7 @@ ShenmeGUI.app do
 
     @table = table [['column 1','column 2'],['row','row']]
     @table.tap do |t|
-      t.column_names = ['c1', 'c2']
+      #t.column_names = ['c1', 'c2']
       t.row_names_enum = (1..Float::INFINITY).to_enum
       t << [3, 4]
     end

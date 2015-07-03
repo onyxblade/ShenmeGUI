@@ -111,8 +111,16 @@ module ShenmeGUI
             ws.onclose { puts "Connection closed" }
 
             ws.onmessage do |msg|
-              puts "Recieved message: #{msg}"
+              puts "Recieved: #{msg}"
               handle msg
+            end
+
+            class << ws
+              alias :original_send :send
+              def send(msg)
+                puts "Sent: #{msg}"
+                original_send(msg)
+              end
             end
 
             #@socket = ws
