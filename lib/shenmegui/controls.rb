@@ -194,10 +194,21 @@ module ShenmeGUI
     end
 
     class Table < Base
-      property :data, :max_column_width, :column_names, :row_names, :row_names_enum
+      attr_accessor :row_names_enum
+      property :data, :max_column_width, :column_names, :row_names
       shortcut :data
       default :width=>'100%', :height=>'150px'
 
+      def validate(params)
+        if @row_names_enum
+          params[:row_names] = []
+          @row_names_enum.rewind
+          params[:data].size.times do
+            params[:row_names] << @row_names_enum.next
+          end
+        end
+      end
+      
       def << row
         data << row
       end
