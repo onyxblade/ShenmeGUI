@@ -132,7 +132,7 @@ input[type="radio"]:checked + label:before {
 .table {
   background-color: #808080;
   overflow: auto;
-  padding: 1px; }
+  padding: 0 0 10px 0; }
 
 table {
   border-collapse: collapse;
@@ -141,14 +141,23 @@ table {
 td {
   vertical-align: baseline;
   padding: 3px 15px 3px 3px;
-  border: 1px solid #d4d0c8;
+  border: 1px solid #bfbfbf;
   overflow: auto; }
 
 th {
   background-color: #bfbfbf;
   padding: 3px 0 3px 9px;
-  border: 1px solid #fff;
-  border-right-color: #808080;
+  border: 1px solid #808080;
+  border-left-color: #fff;
   box-sizing: border-box; }
+
+tr th:last-child {
+  border-right-color: #bfbfbf; }
+
+table tr:first-child th {
+  border-top-color: #fff; }
+
+table tr:last-child th {
+  border-bottom-color: #bfbfbf; }
 
 /*# sourceMappingURL=style.css.map */
