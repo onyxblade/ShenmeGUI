@@ -5,19 +5,7 @@ module ShenmeGUI
     class Base
       attr_accessor :id, :properties, :events, :children, :parent
 
-      def add_hook(obj)
-        case obj
-          when String
-            HookedString.new(obj, self)
-          when Array
-            HookedArray.new(obj, self)
-          when Hash
-            HookedHash.new(obj, self)
-          else
-            obj
-        end
-      end
-
+      # 读取时直接从@properties读取，写入时则调用update_properties这个统一的接口
       def self.property(*arr)
         arr.each do |x|
           define_method(x) do
@@ -39,26 +27,29 @@ module ShenmeGUI
 
       end
 
+      # 注意@default_properties都是未上钩子的属性，因为钩子本身需要控件的self，而此时控件还未实例化
       def self.default(params)
-        @default_properties = params
+        @default_properties ||= {}
+        @default_properties.merge!(params)
       end
 
       def self.default_properties
         @default_properties
       end
 
+      # 注册事件及获取事件的lambda，事件lambda存储在events属性里，最后的self是为了支持链式调用
       available_events = %w{click input dblclick mouseover mouseout blur focus mousedown mouseup change select}.collect(&:to_sym)
       available_events.each do |x|
         define_method("on#{x}") do |&block|
-          return events[x] if block.nil?
-          events[x] = lambda &block
+          return @events[x] if block.nil?
+          @events[x] = lambda &block
           self
         end
       end
 
       def sync
         data = @properties
-        validate @properties
+        before_sync
         msg = "sync:#{@id}->#{data.to_json}"
         ShenmeGUI.socket.send(msg)
       end
@@ -70,7 +61,7 @@ module ShenmeGUI
 
       def update_properties(data)
         data = Hash[data.keys.collect(&:to_sym).zip(data.values.collect{|x| add_hook(x)})]
-        @properties.update(data)
+        @properties.merge!(data)
       end
 
       def sync_events
@@ -81,7 +72,8 @@ module ShenmeGUI
       end
 
       def initialize(params={})
-        @properties = self.class.default_properties ? self.class.default_properties.dup : {}
+        @properties = {}
+        update_properties(self.class.default_properties.dup) if self.class.default_properties
         update_properties(params)
         @id = ShenmeGUI.elements.size
         ShenmeGUI.elements << self
@@ -98,11 +90,26 @@ module ShenmeGUI
         template.result(binding)
       end
 
-      def validate(params)
+      def before_sync
       end
 
       property :width, :height, :font, :background, :margin, :border
 
+      private
+        #这里存在重复给某字符串加钩子的情况，真是有够难抓的BUG
+        def add_hook(obj)
+          p obj.class
+          case obj
+            when String
+              HookedString.new(obj, self, :sync)
+            when Array
+              HookedArray.new(obj, self, :sync)
+            when Hash
+              HookedHash.new(obj, self, :sync)
+            else
+              obj
+          end
+        end
     end
 
     class Body < Base
@@ -173,9 +180,9 @@ module ShenmeGUI
       shortcut :percent
       default :width=>'100%'
 
-      def validate(params)
-        params[:percent] = 0 if params[:percent] < 0
-        params[:percent] = 100 if params[:percent] > 100
+      def before_sync
+        @properties[:percent] = 0 if @properties[:percent] < 0
+        @properties[:percent] = 100 if @properties[:percent] > 100
       end
     end
 
@@ -200,12 +207,12 @@ module ShenmeGUI
       shortcut :data
       default :width=>'100%', :height=>'150px'
 
-      def validate(params)
+      def before_sync
         if @row_names_enum
-          params[:row_names] = []
+          @properties[:row_names] = []
           @row_names_enum.rewind
-          params[:data].size.times do
-            params[:row_names] << @row_names_enum.next
+          @properties[:data].size.times do
+            @properties[:row_names] << @row_names_enum.next
           end
         end
       end
@@ -216,10 +223,11 @@ module ShenmeGUI
     end
 
     controls = constants.reject{|x| x==:Base}
+    control_module = self
     controls.each do |x|
       ShenmeGUI.singleton_class.instance_eval do
         define_method "#{x}".downcase do |*arr, &block|
-          el = const_get("ShenmeGUI::Control::#{x}").new(*arr)
+          el = control_module.const_get(x).new(*arr)
           @temp_stack.last.children << el unless @temp_stack.empty?
           el.parent = @temp_stack.last unless @temp_stack.empty?
           @temp_stack << el
