@@ -102,7 +102,7 @@ function getId(obj){
 
 var syncHandlers = {
 	base: (function(target, data){
-		var properties = ['width', 'height', 'font', 'margin', 'background', 'border'];
+		var properties = ['width', 'height', 'font', 'margin'];
 		for(var i=0;i<properties.length;i++){
 			if(data[properties[i]]!=undefined) target.style[properties[i]] = data[properties[i]];
 		}

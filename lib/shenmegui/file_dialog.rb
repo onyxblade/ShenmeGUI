@@ -39,7 +39,7 @@ module ShenmeGUI
       flags = 0x00880000
       flags += 0x00000200 if params[:multi_select]
       flags += 0x10000000 if params[:show_hidden]
-      initial_path = params[:initial_path] ? params[:initial_path] : 0
+      initial_path = params[:initial_path] ? params[:initial_path].encode('GBK') : 0
 
       path = "\0" * 1024
       ofn = Struct_OPENFILENAME.malloc
