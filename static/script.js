@@ -113,11 +113,11 @@ var syncHandlers = {
 	}),
 
 	form: (function(target, data){
-		target.getElementsByClassName('title')[0].getElementsByTagName('span')[0].innerText = data.title;
+		target.getElementsByClassName('title')[0].getElementsByTagName('span')[0].textContent = data.title;
 	}),
 
 	button: (function(target, data){
-		target.innerText = data.text;
+		target.textContent = data.text;
 	}),
 
 	textline: (function(target, data){
@@ -161,7 +161,7 @@ var syncHandlers = {
 			var label = document.createElement('label');
 			input.type = 'checkbox';
 			input.value = data.options[i];
-			label.innerText = data.options[i];
+			label.textContent = data.options[i];
 			option.appendChild(input);
 			option.appendChild(label);
 			target.appendChild(option);
@@ -187,7 +187,7 @@ var syncHandlers = {
 			input.type="radio";
 			input.value = data.options[i];
 			input.name = "radio";
-			label.innerText = data.options[i];
+			label.textContent = data.options[i];
 			option.appendChild(input);
 			option.appendChild(label);
 			target.appendChild(option);
@@ -203,13 +203,13 @@ var syncHandlers = {
 		for(var i=0;i<data.options.length;i++){
 			var option = document.createElement('option');
 			option.value = data.options[i];
-			option.innerText = data.options[i];
+			option.textContent = data.options[i];
 			target.appendChild(option);
 		}
 	}),
 
 	label: (function(target, data){
-		target.innerText = data.text;
+		target.textContent = data.text;
 	}),
 
 	table: (function(target, data){
@@ -222,12 +222,12 @@ var syncHandlers = {
 			var tr = document.createElement('tr');
 			if (rowNames) {
 				var th = document.createElement('th');
-				th.innerText = '';
+				th.textContent = '';
 				tr.appendChild(th);
 			}
 			for(var i=0; i<columnNames.length; i++ ){
 				var th = document.createElement('th');
-				th.innerText = columnNames[i] || '';
+				th.textContent = columnNames[i] || '';
 				tr.appendChild(th);
 			}
 			table.appendChild(tr);
@@ -236,12 +236,12 @@ var syncHandlers = {
 			var tr = document.createElement('tr');
 			if(rowNames){
 				var th = document.createElement('th');
-				th.innerText = rowNames[i] || '';
+				th.textContent = rowNames[i] || '';
 				tr.appendChild(th);
 			}
 			for(var j=0; j<tableData[i].length; j++){
 				var td = document.createElement('td');
-				td.innerText = tableData[i][j];
+				td.textContent = tableData[i][j];
 				tr.appendChild(td);
 			}
 			table.appendChild(tr);
