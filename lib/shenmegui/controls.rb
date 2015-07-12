@@ -93,12 +93,12 @@ module ShenmeGUI
       def before_sync
       end
 
-      property :width, :height, :font, :background, :margin, :border
+      property :width, :height, :font, :margin
 
       private
         #这里存在重复给某字符串加钩子的情况，真是有够难抓的BUG
         def add_hook(obj)
-          p obj.class
+          #p obj.class
           case obj
             when String
               HookedString.new(obj, self, :sync)
@@ -202,17 +202,18 @@ module ShenmeGUI
     end
 
     class Table < Base
-      attr_accessor :row_names_enum
-      property :data, :max_column_width, :column_names, :row_names
+      #attr_accessor :row_names_enum
+      property :data, :max_column_width, :column_names, :row_names, :row_names_enum
       shortcut :data
       default :width=>'100%', :height=>'150px'
 
       def before_sync
-        if @row_names_enum
+        row_names_enum = @properties[:row_names_enum]
+        if row_names_enum
           @properties[:row_names] = []
-          @row_names_enum.rewind
+          row_names_enum.rewind
           @properties[:data].size.times do
-            @properties[:row_names] << @row_names_enum.next
+            @properties[:row_names] << row_names_enum.next
           end
         end
       end

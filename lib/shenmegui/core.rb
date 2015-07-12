@@ -5,8 +5,9 @@ module ShenmeGUI
   @elements = []
   @temp_stack = []
 
+  # FakeSocket把send的内容都记录下来，在WebSocket连接建立时会将这些消息读出，转发到ws上
   class FakeSocket
-    attr_accessor :messages
+    attr_reader :messages
     def initialize
       @messages = []
     end
@@ -16,10 +17,9 @@ module ShenmeGUI
   end
 
   class << self
-    attr_accessor :socket
-    attr_reader :this, :elements
+    attr_reader :this, :elements, :socket
 
-    def handle(msg)
+    def handle_message(msg)
       match_data = msg.match(/(.+?):(\d+)(?:->)?({.+?})?/)
       command = match_data[1].to_sym
       id = match_data[2].to_i
@@ -37,8 +37,11 @@ module ShenmeGUI
       end
       target
     end
+    private :handle_message
 
     def app(params={}, &block)
+      raise "ShenmeGUI app has been initialized" if @initialized
+      @initialized = true
       @socket = FakeSocket.new
       body(params, &block)
       #找一个空闲的端口，不太好看
@@ -112,7 +115,7 @@ module ShenmeGUI
 
             ws.onmessage do |msg|
               puts "Recieved: #{msg}"
-              handle msg
+              handle_message msg
             end
 
             class << ws
