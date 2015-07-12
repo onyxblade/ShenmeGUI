@@ -66,7 +66,7 @@ module ShenmeGUI
 
       def sync_events
         data = @events.keys
-        return if data.empty?
+        #return if data.empty?
         msg = "add_event:#{@id}->#{data.to_json}"
         ShenmeGUI.socket.send(msg)
       end

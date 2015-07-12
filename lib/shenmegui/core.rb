@@ -42,7 +42,8 @@ module ShenmeGUI
     def app(params={}, &block)
       raise "ShenmeGUI app has been initialized" if @initialized
       @initialized = true
-      @socket = FakeSocket.new
+      @fake_socket = FakeSocket.new
+      @socket = @fake_socket
       body(params, &block)
       #找一个空闲的端口，不太好看
       temp_server = TCPServer.open('localhost', 0)
@@ -97,27 +98,13 @@ module ShenmeGUI
     end
 
     def start!
-      ws_thread = Thread.new do
-        EM.run do
-          EM::WebSocket.run(:host => "0.0.0.0", :port => @port) do |ws|
-            ws.onopen do
-              puts "WebSocket connection open"
-              @elements.each do |e|
-                e.sync_events
-                e.sync
-              end
-              @socket.messages.each do |msg|
-                ws.send(msg)
-              end
-              @socket = ws
-            end
-
-            ws.onclose { puts "Connection closed" }
-
-            ws.onmessage do |msg|
-              puts "Recieved: #{msg}"
-              handle_message msg
-            end
+      EM.run do
+        EM::WebSocket.run(:host => "0.0.0.0", :port => @port) do |ws|
+          ws.onopen do
+            puts "WebSocket connection open"
+            # 同时只能有一个连接，而正常连接关闭的时候会把@socket指向FakeSocket，如果建立连接的时候发现@socket是WebSocket，便把连接关掉
+            @socket.close if @socket.respond_to? :close
+            @socket = ws
 
             class << ws
               alias :original_send :send
@@ -127,12 +114,25 @@ module ShenmeGUI
               end
             end
 
-            #@socket = ws
+            @elements.each do |e|
+              e.sync_events
+              e.sync
+            end
+            @socket.send(@fake_socket.messages.shift) until @fake_socket.messages.empty?
           end
+
+          ws.onclose do
+            puts "Connection closed"
+            @socket = @fake_socket
+          end
+
+          ws.onmessage do |msg|
+            puts "Recieved: #{msg}"
+            handle_message msg
+          end
+
         end
       end
-
-      ws_thread.join
     rescue Interrupt
       puts 'bye~'
     end
