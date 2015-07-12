@@ -1,6 +1,6 @@
 require '../lib/shenmegui'
 
-ShenmeGUI.app do
+ShenmeGUI.app(title: 'test application') do
   form title: 'test' do
     button('open file').onclick { @text.text = get_open_file_name; @i.src=@text.text}
     @sel = select %w{1 2 3}
@@ -27,7 +27,7 @@ ShenmeGUI.app do
       end
     end
     
-    @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
+    @i = image "http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg"
     @src = textline @i.src
     @src.onchange do
       @i.src = @src.text

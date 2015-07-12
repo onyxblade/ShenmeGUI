@@ -122,18 +122,18 @@ var syncHandlers = {
 
 	textline: (function(target, data){
 		target.value = data.text;
-		if(data.selection){
-			target.selectionStart = data.selection[0];
-			target.selectionEnd = data.selection[1];
-		}
+		//if(data.selection){
+		//	target.selectionStart = data.selection[0];
+		//	target.selectionEnd = data.selection[1];
+		//}
 	}),
 
 	textarea: (function(target, data){
 		target.value = data.text;
-		if(data.selection){
-			target.selectionStart = data.selection[0];
-			target.selectionEnd = data.selection[1];
-		}
+		//if(data.selection){
+		//	target.selectionStart = data.selection[0];
+		//	target.selectionEnd = data.selection[1];
+		//}
 	}),
 
 	image: (function(target, data){
