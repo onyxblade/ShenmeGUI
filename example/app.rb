@@ -2,7 +2,7 @@ require '../lib/shenmegui'
 
 ShenmeGUI.app(title: 'test application') do
   form title: 'test' do
-    button('open file').onclick { @text.text = get_open_file_name; @i.src=@text.text}
+    button('open file').onclick { @text.text = get_open_file_name || ''; @i.src=@text.text}
     @sel = select %w{1 2 3}
 
     radio %w{option1 option2 option3}, arrange: 'horizontal'

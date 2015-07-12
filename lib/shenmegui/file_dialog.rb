@@ -29,17 +29,17 @@ module ShenmeGUI
       int lpfnHook,
       LPCSTR lpTemplateName
     EOS
-    extern 'BOOL GetOpenFileName(struct OPENFILENAME*)'
-    extern 'BOOL GetSaveFileName(struct OPENFILENAME*)'
+    extern 'BOOL GetOpenFileNameW(struct OPENFILENAME*)'
+    extern 'BOOL GetSaveFileNameW(struct OPENFILENAME*)'
     extern 'HWND GetForegroundWindow()'
 
     def self.construct_OPENFILENAME(params={})
-      filter = params[:filter] ? "#{params[:filter]}\0#{params[:filter]}\0\0" : 0
+      filter = params[:filter] ? "#{params[:filter]}\0#{params[:filter]}\0\0".encode('UTF-16LE') : 0
       title = params[:title] || 0
       flags = 0x00880000
       flags += 0x00000200 if params[:multi_select]
       flags += 0x10000000 if params[:show_hidden]
-      initial_path = params[:initial_path] ? params[:initial_path].encode('GBK') : 0
+      initial_path = params[:initial_path] ? params[:initial_path].encode('UTF-16LE') : 0
 
       path = "\0" * 1024
       ofn = Struct_OPENFILENAME.malloc
@@ -69,19 +69,20 @@ module ShenmeGUI
 
     def self.get_open_file_name(params={})
       ofn, path = construct_OPENFILENAME(params)
-      GetOpenFileName(ofn)
+      GetOpenFileNameW(ofn)
       Fiddle.free(ofn.to_i)
-      path = path.split("\0")
+      path = path.force_encoding('UTF-16LE').encode('UTF-8').split("\0")
       path = path[1..-1].collect{|x| "#{path[0]}\\#{x}"} if path.size > 1
-      path.collect{|x| x.force_encoding('GBK').encode('UTF-8')}
       path.size > 1 ? path : path[0]
     end
 
     def self.get_save_file_name(params={})
+      #禁止保存文件多选
+      params[:multi_select] = false
       ofn, path = construct_OPENFILENAME(params)
-      GetSaveFileName(ofn)
+      GetSaveFileNameW(ofn)
       Fiddle.free(ofn.to_i)
-      path.force_encoding('GBK').encode('UTF-8')
+      path.force_encoding('UTF-16LE').encode('UTF-8').split("\0")
     end
 
   #avoid error under linux
@@ -99,4 +100,4 @@ module ShenmeGUI
 
 end
 
-#ShenmeGUI::FileDialog.get_open_file_name(initial_path: 'C:\\')
+#puts ShenmeGUI::FileDialog.get_open_file_name(initial_path: 'D:\\迅雷下载', multi_select: true, filter: '*.中文')
