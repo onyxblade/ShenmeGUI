@@ -28,22 +28,20 @@ ShenmeGUI.app do
       label 'image path:'
       @t = textarea '', width: '100%'
     end
-    @i = image "http://7jpqbr.com1.z0.glb.clouddn.com/bw-2014-06-19.jpg"
+    @i = image "http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg"
     @p = progress(75)
     button('+').onclick { @p.percent += 5 }
     button('-').onclick { @p.percent -= 5 }
   end
 end
 
+ShenmeGUI.open_browser
 ShenmeGUI.start!
 ```
 
 将会产生如图所示的界面：
 
 ![](http://cichol.qiniudn.com/shenmegui_example.png)
-
-
-如未自动打开浏览器，可手动打开程序代码同目录的index.html。
 
 button定义按钮，并通过onclick绑定上了点击事件。第一个按钮弹出一个对话框，第二个按钮弹出一个打开文件的对话框，将文件路径写到下方定义的textarea里，并改变image的src以显示这个图片。
 
@@ -55,7 +53,7 @@ Ruby版本大于等于2.0.0。
 
 因为前后端通讯使用了websocket，所以需要使用支持websocket的浏览器。
 
-目前打开文件对话框只实现了windows版本，在Linux等使用会出错，以后会尝试在其他系统实现，除此之外对系统没有要求。
+目前打开文件对话框只实现了windows版本，在Linux等系统使用会给出未实现的提示，除此之外对系统没有要求。
 
 ###wiki
 

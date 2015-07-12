@@ -137,11 +137,6 @@ module ShenmeGUI
     class Textline < Base
       property :text, :selection
       shortcut :text
-
-      def text=(v)
-        update_properties({text: v, selection: [v.size]*2 })
-        sync
-      end
     end
 
     class Textarea < Base
@@ -151,11 +146,6 @@ module ShenmeGUI
 
       def <<(t)
         text << "\n#{t}"
-      end
-
-      def text=(v)
-        update_properties({text: v, selection: [v.size]*2 })
-        sync
       end
     end
 

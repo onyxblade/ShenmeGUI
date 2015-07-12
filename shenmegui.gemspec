@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'shenmegui'
-  s.version     = '0.3.6'
-  s.date        = '2015-07-02'
+  s.version     = '0.4'
+  s.date        = '2015-07-12'
   s.summary     = "什么鬼!"
   s.description = "a simple HTML GUI for Ruby"
   s.authors     = ["CicholGricenchos"]
