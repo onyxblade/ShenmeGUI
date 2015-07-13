@@ -90,9 +90,11 @@ module ShenmeGUI
       app_dir = File.expand_path($PROGRAM_NAME).match(/(.+)\/.+/)[1]
       index_path = "#{app_dir}/index.html"
       if Gem.win_platform?
-        `start file:///#{index_path}`
+        `start #{index_path}`
       elsif Gem.platforms[1].os == 'linux'
-        `xdg-open file:///#{index_path}`
+        `xdg-open #{index_path}`
+      elsif Gem.platforms[1].os == 'darwin'
+        `open #{index_path}`
       end
     rescue
     end

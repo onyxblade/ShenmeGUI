@@ -15,10 +15,8 @@ ShenmeGUI是一套受[Shoes](http://shoesrb.com/)启发而诞生的GUI工具，�
 require 'shenmegui'
 
 ShenmeGUI.app do
-  form(title: 'Your Application') do
-    button('alert').onclick do
-      alert 'Hello World!'
-    end
+  form(title: 'Main Form') do
+    button('alert').onclick{ alert 'Hello World!' }
     button('open an image').onclick do
       path = get_open_file_name
       @t.text = path
@@ -26,13 +24,37 @@ ShenmeGUI.app do
     end
     stack do
       label 'image path:'
-      @t = textarea '', width: '100%'
+      @t = textarea 'http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg', width: '100%'
+      @t.oninput{ @i.src = this.text }
     end
-    @i = image "http://s.amazeui.org/media/i/demos/bw-2014-06-19.jpg"
+    @i = image @t.text
     @p = progress(75)
     button('+').onclick { @p.percent += 5 }
     button('-').onclick { @p.percent -= 5 }
   end
+
+  form(title: 'Radiobox & Checkbox') do
+    options = %w{option1 option2 option3}
+    arr = []
+    arr << select(options)
+    arr << radio(options, arrange: 'horizontal')
+    arr << checkbox(options, checked: options[1])
+    arr.each{|x| x.onchange{ alert this.checked } }
+  end
+
+  form(title: 'Table') do
+    @table = table([[1,2], [3,4]]).tap do |t|
+      t.column_names = ['x', 'y']
+      t.row_names_enum = (1..Float::INFINITY).to_enum
+    end
+    flow do
+      @x = textline 'new x', width: '60px'
+      @y = textline 'new y', width: '60px'
+    end
+    button('add row').onclick{ @table << [@x.text, @y.text]}
+    button('remove row').onclick { @table.data.pop }
+  end
+
 end
 
 ShenmeGUI.open_browser
@@ -41,11 +63,7 @@ ShenmeGUI.start!
 
 将会产生如图所示的界面：
 
-![](http://cichol.qiniudn.com/shenmegui_example.png)
-
-button定义按钮，并通过onclick绑定上了点击事件。第一个按钮弹出一个对话框，第二个按钮弹出一个打开文件的对话框，将文件路径写到下方定义的textarea里，并改变image的src以显示这个图片。
-
-下方的两个按钮演示了进度条的增减。
+![](http://7mj4yb.com1.z0.glb.clouddn.com/ShenmeGUI_example20150713.png)
 
 ###系统需求
 
