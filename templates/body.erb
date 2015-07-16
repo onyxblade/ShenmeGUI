@@ -3,15 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<title><%= material[:title] %></title>
-	<style>
-		<%= material[:style] %>
-	</style>
+	<link rel="stylesheet" type="text/css" href="<%= material[:style] %>">
 </head>
 <body id="item-<%= id %>" data-type="body">
 	<%= content %>
-	<script>
-		wsPort = <%= material[:port] %>;
-		<%= material[:script] %>
-	</script>
+	<script type="text/javascript">var wsPort = <%= material[:port] %></script>
+	<script type="text/javascript" src="<%= material[:script] %>"></script>
 </body>
 </html>

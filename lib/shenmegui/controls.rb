@@ -116,8 +116,8 @@ module ShenmeGUI
       def render(material = {})
         gem_path = __FILE__.match(/(.*)\/lib/)[1]
         static_path = gem_path + "/static"
-        style = %w{style}.collect{|x| File.read("#{static_path}/#{x}.css")}.join("\n")
-        script = File.read("#{static_path}/script.js")
+        style = "file:///#{static_path}/style.css"
+        script = "file:///#{static_path}/script.js"
         super({style: style, script: script}.merge(material))
       end
 
@@ -193,7 +193,7 @@ module ShenmeGUI
 
     class Table < Base
       #attr_accessor :row_names_enum
-      property :data, :max_column_width, :column_names, :row_names, :row_names_enum
+      property :data, :max_column_width, :column_names, :row_names, :row_names_enum, :column_names_enum
       shortcut :data
       default :width=>'100%', :height=>'150px'
 
@@ -204,6 +204,14 @@ module ShenmeGUI
           row_names_enum.rewind
           @properties[:data].size.times do
             @properties[:row_names] << row_names_enum.next
+          end
+        end
+        column_names_enum = @properties[:column_names_enum]
+        if column_names_enum
+          @properties[:column_names] = []
+          column_names_enum.rewind
+          @properties[:data].max_by{|x| x.size}.size.times do
+            @properties[:column_names] << column_names_enum.next
           end
         end
       end

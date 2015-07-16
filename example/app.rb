@@ -48,10 +48,11 @@ ShenmeGUI.app(title: 'test application') do
     @table.tap do |t|
       t.column_names = ['c1', 'c2']
       t.row_names_enum = (1..Float::INFINITY).to_enum
+      t.column_names_enum = (1..Float::INFINITY).lazy.collect{|x| "column #{x}"}
       t << [3, 4]
     end
-
-    button('test add new row').onclick { @table << ['new row','new row']}
+    size = 2
+    button('test add new row').onclick { @table << ['new row']*size; size+= 1}
   end
 
 end
