@@ -71,6 +71,22 @@ var changeListeners = {
 			this.properties.checked = this.elements['radio'].value;
 			sync(this);
 		})
+	},
+
+	table: {
+		event: ['change'],
+		function: (function(){
+			if(this.properties.editable){
+				var tds = this.getElementsByTagName('td');
+				for(var i=0; i<tds.length; i++){
+					var td = tds[i];
+					var pos = JSON.parse(td.pos);
+					var input = td.getElementsByTagName('input')[0];
+					this.properties.data[pos[0]][pos[1]] = input.value;
+				}
+			}
+			sync(this);
+		})
 	}
 }
 
@@ -233,7 +249,15 @@ var syncHandlers = {
 			}
 			for(var j=0; j<tableData[i].length; j++){
 				var td = document.createElement('td');
-				td.textContent = tableData[i][j];
+				td.pos = '[' + i.toString() + ',' + j.toString() + ']';
+				if(data.editable){
+					var input = document.createElement('input');
+					input.type = "text";
+					input.value = tableData[i][j];
+					td.appendChild(input);
+				} else {
+					td.textContent = tableData[i][j];
+				}
 				tr.appendChild(td);
 			}
 			table.appendChild(tr);

@@ -193,7 +193,7 @@ module ShenmeGUI
 
     class Table < Base
       #attr_accessor :row_names_enum
-      property :data, :max_column_width, :column_names, :row_names, :row_names_enum, :column_names_enum
+      property :data, :max_column_width, :column_names, :row_names, :row_names_enum, :column_names_enum, :editable
       shortcut :data
       default :width=>'100%', :height=>'150px'
 

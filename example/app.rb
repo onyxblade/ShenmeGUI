@@ -44,7 +44,7 @@ ShenmeGUI.app(title: 'test application') do
 
     checkbox ['check me', 'and me'], checked:['check me']
 
-    @table = table [['column 1','column 2'],['row','row']]
+    @table = table [['column 1','column 2'],['row','row']], :editable => true
     @table.tap do |t|
       t.column_names = ['c1', 'c2']
       t.row_names_enum = (1..Float::INFINITY).to_enum

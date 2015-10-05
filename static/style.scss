@@ -201,6 +201,11 @@ td {
 	padding: 3px 15px 3px 3px;
 	border: 1px solid #bfbfbf;
 	overflow: auto;
+
+	input[type="text"] {
+		border: none;
+		box-shadow: none;
+	}
 }
 
 th {
