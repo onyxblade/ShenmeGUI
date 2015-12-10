@@ -76,15 +76,15 @@ var changeListeners = {
 	table: {
 		event: ['change'],
 		function: (function(){
-			if(this.properties.editable){
-				var tds = this.getElementsByTagName('td');
-				for(var i=0; i<tds.length; i++){
-					var td = tds[i];
-					var pos = JSON.parse(td.pos);
-					var input = td.getElementsByTagName('input')[0];
-					this.properties.data[pos[0]][pos[1]] = input.value;
-				}
+			var tds = this.getElementsByTagName('td');
+			for(var i=0; i<tds.length; i++){
+				var td = tds[i];
+				var pos = JSON.parse(td.pos);
+				var input = td.getElementsByTagName('input')[0];
+				this.properties.data[pos[0]][pos[1]] = input.value;
 			}
+			delete this.properties.row_names_enum;
+			delete this.properties.column_names_enum;
 			sync(this);
 		})
 	}
@@ -250,13 +250,13 @@ var syncHandlers = {
 			for(var j=0; j<tableData[i].length; j++){
 				var td = document.createElement('td');
 				td.pos = '[' + i.toString() + ',' + j.toString() + ']';
+				var input = document.createElement('input');
+				input.type = "text";
+				input.value = tableData[i][j];
+				td.appendChild(input);
 				if(data.editable){
-					var input = document.createElement('input');
-					input.type = "text";
-					input.value = tableData[i][j];
-					td.appendChild(input);
 				} else {
-					td.textContent = tableData[i][j];
+					input.readOnly = true;
 				}
 				tr.appendChild(td);
 			}
