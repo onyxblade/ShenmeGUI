@@ -1,7 +1,7 @@
 require '../lib/shenmegui'
 
 ShenmeGUI.app(title: 'test application') do
-  form title: 'test' do
+  form title: 'test', resizable: true do
     button('open file').onclick { @text.text = get_open_file_name || ''; @i.src=@text.text}
     @sel = select %w{1 2 3}
 

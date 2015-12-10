@@ -130,6 +130,13 @@ var syncHandlers = {
 
 	form: (function(target, data){
 		target.getElementsByClassName('title')[0].getElementsByTagName('span')[0].textContent = data.title;
+		if(data.resizable){
+			target.style.overflow = "auto";
+			target.style.resize = "both";
+		} else {
+			target.style.overflow = "initial";
+			target.style.resize = "none";
+		}
 	}),
 
 	button: (function(target, data){

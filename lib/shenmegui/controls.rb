@@ -124,7 +124,7 @@ module ShenmeGUI
     end
 
     class Form < Base
-      property :title
+      property :title, :resizable
       default :width=>'400px'
     end
 
