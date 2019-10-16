@@ -63,7 +63,7 @@ ShenmeGUI.start!
 
 将会产生如图所示的界面：
 
-![](http://7mj4yb.com1.z0.glb.clouddn.com/ShenmeGUI_example20150713.png)
+![](https://raw.githubusercontent.com/CicholGricenchos/ShenmeGUI/static/ShenmeGUI_example20150713.png)
 
 ###系统需求
 
